@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.Format;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -107,6 +108,13 @@ public class QuizController {
 	{
 		if(year/4==0&&!(year%100==0)||year%400==0) return "해당 연도 "+year+"은 윤년입니다.";
 		else return "해당 연도 "+year+"은 윤년이 아닙니다.";	
+	}
+	
+	@RequestMapping("/student")
+	@ResponseBody
+	public String student(@ModelAttribute Student student)
+	{
+		return "받은 데이터 : " + student.toString();
 	}
 	
 }
