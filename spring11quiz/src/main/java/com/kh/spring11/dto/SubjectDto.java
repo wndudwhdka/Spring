@@ -1,9 +1,9 @@
 package com.kh.spring11.dto;
 
-import org.springframework.stereotype.Repository;
 
 
-@Repository
+
+
 public class SubjectDto {
 	private int no;
 	private String name;

@@ -2,6 +2,7 @@ package com.kh.spring11.controller;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,7 +18,7 @@ import com.kh.spring11.dto.SubjectDto;
 public class SubjectController {
 	
 	@Autowired
-	private SubjectDao subjectDao;
+	private SubjectDao dao;
 	
 //	@RequestMapping("/insert")
 //	@ResponseBody
@@ -31,28 +32,33 @@ public class SubjectController {
 //	- @ResponseBody를 제거하고 redirect: 로 시작하는 문자열을 반환한다
 	@RequestMapping("/insert")
 	public String insert(@ModelAttribute SubjectDto dto) {
-		subjectDao.insert(dto);
-		return "redirect:list";//상대경로
+		dao.insert(dto);
+		return dto.toString();//상대경로
 //		return "redirect:/subject/list";//절대경로
 	}
 	
 	@RequestMapping("/list")
 	@ResponseBody
-	public String list(
-			@RequestParam(required = false, defaultValue = "name") String column,
-			@RequestParam(required = false, defaultValue = "") String keyword) {
-		List<SubjectDto> list;
-		if(keyword.equals("")) {//목록이라면
-			list = subjectDao.selectList();
-		}
-		else {//검색이라면
-			list = subjectDao.selectList(column, keyword);
-		}
+	public String list(){
+		List<SubjectDto> list = dao.selectList();
 		
 		StringBuffer buffer = new StringBuffer();
 		for(SubjectDto dto : list) {
 			buffer.append(dto.toString());
-			buffer.append("<br>");
+			buffer.append("<br>");//줄바꿈
+		}
+		return buffer.toString();
+	}
+	
+	@RequestMapping("/search")
+	@ResponseBody
+	public String search(@RequestParam String column, @RequestParam String keyword) {
+		List<SubjectDto> list = dao.selectList(column, keyword);
+
+		StringBuffer buffer = new StringBuffer();
+		for (SubjectDto dto : list) {
+			buffer.append(dto.toString());
+			buffer.append("<br>");// 줄바꿈
 		}
 		return buffer.toString();
 	}
@@ -60,7 +66,7 @@ public class SubjectController {
 	@RequestMapping("/detail")
 	@ResponseBody
 	public String detail(@RequestParam int no) {
-		SubjectDto dto = subjectDao.selectOne(no);
+		SubjectDto dto = dao.selectOne(no);
 		if(dto == null) {
 			return "대상 없음";
 		}
@@ -72,7 +78,7 @@ public class SubjectController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public String edit(@ModelAttribute SubjectDto dto) {
-		boolean success = subjectDao.update(dto);
+		boolean success = dao.update(dto);
 		
 		return success ? "변경 성공" : "없는 대상";
 //		if(success) {
@@ -86,7 +92,7 @@ public class SubjectController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public String delete(@RequestParam int no) {
-		boolean success = subjectDao.delete(no);
+		boolean success = dao.delete(no);
 		return success ? "삭제 완료" : "존재하지 않는 대상";
 	}
 
