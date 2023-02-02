@@ -10,11 +10,16 @@
 	<h1>과목 정보 페이지</h1><br><br><br>
 	
 	<h2>과목 정보 등록</h2>
-	<form action="/subject/insert">
-		<input name="name">과목명<br><br>
-		<input name="perioed">기간(30개월단위)<br><br>
-		<input name="price">가격<br><br>
-		<input name="type">온라인,오프라인,혼합<br><br>
+	<form action="../subject/insert">
+		과목:<input type="text" name="name" required="required"><br><br>
+		기간:<input type="number" name="period" min="0" max="150" step="30" required="required" placeholder="기간"><br><br>
+		가격:<input type="number" name="price" required="required"><br><br>
+		유형:
+		<select name="type" required>
+			<option >온라인</option>
+			<option >오프라인</option>
+			<option >혼합</option>
+		</select>
 		<button>등록</button>
 	</form>
 	
