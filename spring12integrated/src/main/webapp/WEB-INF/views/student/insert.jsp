@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <title> 학생 등록 페이지  </title>
-</head> 
+</head>
 <body>
 	<h1>학생 등록</h1>
 <!-- 	<form action="/pocketmon/insertProcess"> -->

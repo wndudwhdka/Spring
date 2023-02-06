@@ -8,4 +8,4 @@
 	<h1>${pocketmonDto.getNo()}번 몬스터는 ${pocketmonDto.getName()}이고 ${pocketmonDto.getType()}입니다. </h1>
 	
 	<h2><a href="list">목록으로 이동</a></h2>
-<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>	 
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>	

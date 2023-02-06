@@ -23,4 +23,4 @@ ol입니다.
 </ol>
 	<a href="insert">등록 페이지로</a>
 	<a href="list">목록 페이지로</a>
-<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include> 
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

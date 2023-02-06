@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
- 
+
 <h1>나의 정보입니다. </h1><br><br>
 <table border="1" width="400">
 	<tbody>
