@@ -2,11 +2,12 @@ package com.kh.spring12.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring12.dao.SubjectDao;
 import com.kh.spring12.dto.SubjectDto;
@@ -34,5 +35,34 @@ public class SubjectController {
 	public String insertFinish() {
 		return "/WEB-INF/views/subject/insertFinish.jsp";
 	}
+
+	@GetMapping("/detail")
+	public String detial(Model model,@RequestParam int no) {
+		SubjectDto dto = subjectDao.selectOne(no);
+		model.addAttribute("dto",dto);
+		return "/WEB-INF/views/subject/detail.jsp"; 
+	}
 	
+	@GetMapping("/list")
+	public String list(Model model,
+			@RequestParam(required = false,defaultValue="name")String column,
+			@RequestParam(required = false,defaultValue="") String keyword
+			) {
+		if(keyword.equals(""))
+		{
+			model.addAttribute("list",subjectDao.selectList());
+		}
+		else{
+			model.addAttribute("keyword",keyword);
+			model.addAttribute("list",subjectDao.selectList(column, keyword));
+		}
+		return "/WEB-INF/views/subject/list.jsp"; 
+	}
+	
+	@GetMapping("/delete")
+	public String delete(@RequestParam int no)
+	{
+		subjectDao.delete(no); 
+		return "redirect:list"; 
+	}
 }

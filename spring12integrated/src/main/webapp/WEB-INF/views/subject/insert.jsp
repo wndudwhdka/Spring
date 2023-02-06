@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <title>과목 등록 페이지</title>
 </head>
 <body>
@@ -20,5 +17,4 @@
 		</select>
 		<button>등록</button>
 	</form>
-</body>
-</html>
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

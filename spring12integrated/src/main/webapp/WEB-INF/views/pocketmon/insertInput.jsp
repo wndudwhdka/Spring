@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+    pageEncoding="UTF-8"%> 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <title>포켓몬 등록</title>
 </head>
 <body>
@@ -15,5 +12,4 @@
 		속성 : <input name="type"> <br><br>
 		<button>등록</button>
 	</form>
-</body>
-</html>
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>	

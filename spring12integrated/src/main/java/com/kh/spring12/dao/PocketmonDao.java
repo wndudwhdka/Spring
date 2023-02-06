@@ -75,7 +75,7 @@ public class PocketmonDao {
 	
 	public boolean delete(int no)
 	{
-		String sql = "delete pocketmons where no=?"; 
+		String sql = "delete pocketmon where no=?"; 
 		Object[] param = {no}; 
 		return jdbcTemplate.update(sql,param)>0; 
 		
