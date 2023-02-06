@@ -1,4 +1,4 @@
-package com.kh.spring08;
+package src.main.java.com.kh.spring08;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

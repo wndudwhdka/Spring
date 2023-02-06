@@ -19,7 +19,6 @@ public class SubjectDao {
 	
 	private RowMapper<SubjectDto> mapper = new RowMapper<SubjectDto>() {
 
-		@Override
 		public SubjectDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 			SubjectDto dto = new SubjectDto();
 			dto.setNo(rs.getInt("no"));

@@ -18,7 +18,6 @@ public class StudentDao {
 	
 	private RowMapper<StudentDto> mapper = new RowMapper<StudentDto>() {
 
-		@Override
 		public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 			StudentDto dto = new StudentDto(); 
 			dto.setNo(rs.getInt("no"));
