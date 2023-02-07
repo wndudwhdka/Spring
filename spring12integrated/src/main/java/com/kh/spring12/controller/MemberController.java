@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring12.dao.MemberDao;
@@ -92,5 +93,74 @@ public class MemberController {
 	}
 	
 	
+	//비밀번호 변경 기능
+	@GetMapping("/password")
+	public String password() {
+		return "/WEB-INF/views/member/password.jsp"; 
+	}
+	
+	@PostMapping("/password")
+	public String password(
+			HttpSession session, // 아이디가 저장되어 있는 세션 개체
+			@RequestParam String currentPw, //현재 비밀번호
+			@RequestParam String changePw, // 변경할 비밀번호 
+			RedirectAttributes attr // 리다이렉트에 정보를 추가하기 위한 객체
+			) {
+		String memberId = (String)session.getAttribute("memeberId");
+		MemberDto memberDto = memberDao.selectOne(memberId);
+		//비밀먼호가 일치하지 않는다면
+		if(!memberDto.getMemberPw().equals(currentPw)) 
+		{
+			attr.addAttribute("mode","error"); 
+			return "redirect:password"; 
+		}
+		
+		// 비밀번호가 일치한다면 비밀번호 변경처리 
+		memberDao.changePassword(memberId,changePw);
+		return "redirect:passwordFinish.jsp";
+	}
+	
+	@GetMapping("/passwordFinish")
+	public String passwordFinish() {
+		return "/WEB-INF/views/member/passwordFinish.jsp"; 
+	}
+	
+	@GetMapping("/edit")
+	public String edit(
+					Model model,  // 회원정보를 JSP로 전달할 전달 객체
+					HttpSession session) { // 아이디 저장 세선 객체
+		String memberId=(String) session.getAttribute("memberId");
+		MemberDto memberDto = memberDao.selectOne(memberId);
+		model.addAttribute("memberDto", memberDto);
+		return "/WEB-INF/views/member/edit.jsp"; 
+	}
+	
+	@PostMapping("/edit")
+	public String edit(
+			@ModelAttribute MemberDto memberDto,
+			HttpSession session,
+			RedirectAttributes attr) {
+		String memberId = (String)session.getAttribute("memberId"); 
+		MemberDto findDto = memberDao.selectOne(memberId); 
+		
+		
+		// 비밀번호가 일치하지 않는다면 - > 에러 표시 후 이전 ㅍ이지로 리다이레그
+		if(!findDto.getMemberPw().equals(memberDto.getMemberPw()))
+		{
+			attr.addAttribute("mode","error");
+			return "redirect:edit"; 
+		}
+		
+		// 비밀번호가 일치하면
+		memberDto.setMemberId(memberId);
+		memberDao.changeInformation(memberDto);
+		return "redirect:editFinish"; 
+	}
+	@GetMapping("/editFinish")
+	public String editFinish() {
+		return "/WEB-INF/views/member/editFinish.jsp"; 
+	}
 	
 }
+
+
