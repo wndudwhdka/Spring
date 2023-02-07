@@ -29,3 +29,4 @@
 	<a href="/subject/list">과목관리</a>
 	<a href="/student/list">학생관리</a>
 	<a href="/member/mypage">내 정보</a>
+	

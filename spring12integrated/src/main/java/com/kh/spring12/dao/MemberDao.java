@@ -2,6 +2,7 @@ package com.kh.spring12.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class MemberDao {
 	
 	// 비밀번호를 제외한 나머지 정보 변경 기능
 	public boolean changeInformation(MemberDto memberDto) {
-		String sql = "updae member set "
+		String sql = "update member set "
 				+ "member_nick =?, member_tel=?, "
 				+ "member_email=?, member_birth=?, "
 				+ "member_post=?, member_basic_addr=?,"
@@ -93,11 +94,33 @@ public class MemberDao {
 				memberDto.getMemberNick(),memberDto.getMemberTel(),
 				memberDto.getMemberEmail(),memberDto.getMemberBirth(),
 				memberDto.getMemberPost(),memberDto.getMemberBasicAddr(),
-				memberDto.getMemberDetailAddr()
+				memberDto.getMemberDetailAddr(),memberDto.getMemberId()
 		};
 		
 		
 		return jdbcTemplate.update(sql,param) > 0; 
 	}
 	
+	
+	// 회원 탈퇴 기능
+	public boolean exitMember(String memberId) {
+		String sql = "delete member where member_id=?";
+		Object[] param = {memberId};
+		return jdbcTemplate.update(sql,param) > 0;
+	}
+	
+	// 겹치는 것 골라오기 
+	public String findId(MemberDto memberDto)
+	{
+		String sql = "select member_id from member "
+				+ "where member_nick=? and member_tel =? "
+				+ "and member_birth=?";
+		Object[] param = {
+				memberDto.getMemberNick(),
+				memberDto.getMemberTel(),
+				memberDto.getMemberBirth()
+		}; 
+		// mapper가 없을 때 사용
+		return jdbcTemplate.queryForObject(sql, String.class,param); 
+	}
 }

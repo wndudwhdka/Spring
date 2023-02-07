@@ -7,7 +7,7 @@
 
 <!-- 테이블부터 th/td 사이에는 어떠한 태그도 적을 수 없다.  -->
 
-<form action="editFinish" method="post">
+<form action="edit" method="post">
 <table border="0" width="400">
 	<tbody>
 		<tr>

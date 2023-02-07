@@ -1,5 +1,7 @@
 package com.kh.spring12.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +37,7 @@ public class MemberController {
 	public String joinFinish() {
 		return "/WEB-INF/views/member/joinFinish.jsp"; 
 	}
-	
-	
-	  
-	
+		
 	 
 	@GetMapping("/login")
 	public String login() {
@@ -159,6 +158,58 @@ public class MemberController {
 	@GetMapping("/editFinish")
 	public String editFinish() {
 		return "/WEB-INF/views/member/editFinish.jsp"; 
+	}
+	
+	
+	
+	
+	@GetMapping("/exit")
+	public String exit(
+	){
+		return "/WEB-INF/views/member/exit.jsp"; 
+	}
+	
+	@PostMapping("/exit")
+	public String exit(
+			@RequestParam String memberPw,
+			HttpSession session,
+			RedirectAttributes attr
+			) {
+		String memberId = (String)session.getAttribute("memberId");
+		MemberDto deleteDto = memberDao.selectOne(memberId);
+		
+		if(!deleteDto.getMemberPw().equals(memberPw))
+		{
+			attr.addAttribute("mode","error");
+			return "redirect:exit"; 
+		}
+		// 비밀번호가 일치하면 -> 회원탈퇴 + 로그아웃 
+		memberDao.exitMember(memberId);
+		
+		session.removeAttribute("memberId");
+		session.removeAttribute("memberLevel"); 
+		return "redirect:exitFinish"; 
+	}
+	
+	@GetMapping("/exitFinish")
+	public String exitFinish(){
+		return "/WEB-INF/views/member/exitFinish.jsp"; 
+	}
+	
+	@GetMapping("/find")
+	public String find() {
+		return "/WEB-INF/views/member/find.jsp"; 		 
+	}
+	@PostMapping("/find")
+	public String find(
+			@ModelAttribute MemberDto memberDto,
+			Model model){
+
+		String memberId = memberDao.findId(memberDto);
+		model.addAttribute("memberId",memberId); 
+		
+		return "/WEB-INF/views/member/findresult.jsp"; 
+		
 	}
 	
 }
