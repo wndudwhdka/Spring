@@ -5,7 +5,7 @@
 </head>
 <body>
 	<h1>학생상세정보</h1>
-ul입니다.
+
 <ul>
 	<li>번호 : ${dto.no}</li>
 	<li>이름 : ${dto.name}</li>

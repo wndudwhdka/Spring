@@ -123,4 +123,59 @@ public class MemberDao {
 		// mapper가 없을 때 사용
 		return jdbcTemplate.queryForObject(sql, String.class,param); 
 	}
+	
+	public List<MemberDto> selectListPaging(int page, int size)
+	{
+		int end = page * size;
+		int begin = end - (size-1);
+		 String sql = "select * from ("
+		 		+ "select TMP.*, rownum RN from("
+		 		+ "select * from member order by member_id asc"
+		 		+ ")TMP "
+		 		+ ") where RN between ? and ?";
+		 Object[] param = {begin,end };
+		return jdbcTemplate.query(sql , mapper, param); 
+	}
+	
+	public int selectCount() {
+		String sql = "select count(*) from member"; 
+		return jdbcTemplate.queryForObject(sql, int.class); 		
+	}
+	
+	public void waitTableInsert(MemberDto memberDto) {
+		 String sql = "insert into waiting("
+			 		+ "member_id, member_pw, member_nick,"
+			 		+ "member_tel,member_email,member_birth,"
+			 		+ "member_post,member_basic_addr,member_detail_addr,"
+			 		+ "member_level,member_point,member_join,member_login"
+			 		+ ") values("
+			 		+ "?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+			 Object[] param = {
+					 memberDto.getMemberId(),memberDto.getMemberPw(),
+					 memberDto.getMemberNick(),memberDto.getMemberTel(),
+					 memberDto.getMemberEmail(),memberDto.getMemberBirth(),
+					 memberDto.getMemberPost(),memberDto.getMemberBasicAddr(),
+					 memberDto.getMemberDetailAddr(),memberDto.getMemberLevel(),
+					 memberDto.getMemberPoint(),memberDto.getMemberJoin(),
+					 memberDto.getMemberLogin()};
+			jdbcTemplate.update(sql,param); 
+	}
+	
+	public boolean changeInformationByAdmin(MemberDto memberDto)
+	{
+		String sql = "update member set "
+				+ "member_nick =?, member_tel=?, "
+				+ "member_email=?, member_birth=?, "
+				+ "member_post=?, member_basic_addr=?,"
+				+ "member_detail_addr=?, member_level=?"
+				+ "member_point=? "
+				+ "where member_id = ?";
+		Object[] param = {memberDto.getMemberNick(),memberDto.getMemberTel(),
+				 memberDto.getMemberEmail(),memberDto.getMemberBirth(),
+				 memberDto.getMemberPost(),memberDto.getMemberBasicAddr(),
+				 memberDto.getMemberDetailAddr(),memberDto.getMemberLevel(),
+				 memberDto.getMemberPoint(), memberDto.getMemberId()};
+		return jdbcTemplate.update(sql,param) > 0; 
+	}
+	
 }

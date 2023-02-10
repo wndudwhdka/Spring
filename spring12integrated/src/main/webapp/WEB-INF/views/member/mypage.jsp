@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>나의 정보입니다. </h1><br><br>
@@ -35,11 +36,15 @@
 		</tr>
 		<tr>
 			<th>가입일</th>
-			<td>${memberDto.memberJoin}</td>
+			<td>
+			<fmt:formatDate value="${memberDto.memberJoin}"
+				pattern="y년 M월 d일 E a h시 m분 s초"></fmt:formatDate>
+			</td>
 		</tr>
 		<tr>
 			<th>최종 로그인 일시</th>
-			<td>${memberDto.memberLogin}</td>
+			<td><fmt:formatDate value="${memberDto.memberLogin}"
+				pattern="y년 M월 d일 E a h시 m분 s초"></fmt:formatDate></td>
 		</tr>
 	</tbody>
 </table>
