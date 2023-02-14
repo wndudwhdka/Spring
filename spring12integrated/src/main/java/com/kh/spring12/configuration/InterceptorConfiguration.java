@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.kh.spring12.interceptor.AdminInterceptor;
+import com.kh.spring12.interceptor.AdminNoticeInterceptor;
+import com.kh.spring12.interceptor.BoardManageInterceptor;
 import com.kh.spring12.interceptor.MemberInterceptor;
 import com.kh.spring12.interceptor.TestInterceptor;
 
@@ -29,6 +31,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 	@Autowired
 	private AdminInterceptor adminInterceptor;
 	
+	@Autowired
+	private BoardManageInterceptor boardManageInterceptor;
+	
+	@Autowired
+	private AdminNoticeInterceptor adminNoticeInterceptor; 
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		// 인터셉터 등록 메소드
@@ -48,20 +56,30 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		registry.addInterceptor(memberInterceptor)
 				.addPathPatterns(
 						"/member/**",
-						"/admin/**"
+						"/admin/**",
+						"/board/**"
 						)
 				.excludePathPatterns(
 				"/member/join",
 				"/member/login",
 				"/member/joinFinish",
 				"/member/find",
-				"/member/exitFinish"
+				"/member/exitFinish",
+				"/board/list",
+				"/board/detail"
 		);
 		
 		//[3] 관리자 전용 검사 인터셉터 
 		registry.addInterceptor(adminInterceptor)
 				.addPathPatterns("/admin/**");
 		
+		//[4] 작성자 본인 및 관리자 검사 인터셉터
+		registry.addInterceptor(boardManageInterceptor)
+						.addPathPatterns("/board/edit","/board/delete");
+		
+		//[5] 관리자만 공지사항 등록 및 수정이 가능하도록 구현
+		registry.addInterceptor(adminNoticeInterceptor)
+						.addPathPatterns("board/write","/board/edit");
 		
 	}
 }

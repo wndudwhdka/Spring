@@ -29,6 +29,7 @@
 	<a href="/subject/list">과목관리</a>
 	<a href="/student/list">학생관리</a>
 	<a href="/member/mypage">내 정보</a>
+	<a href="/board/list">게시판</a>
 	
 	<c:if test="${memberLevel=='관리자'}"	>
 		<a href="/admin/home">관리자 모드</a>
