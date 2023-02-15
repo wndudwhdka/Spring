@@ -44,7 +44,7 @@
 		<tr>
 			<td>
 				<a href="/board/write">글쓰기</a>
-				<a href="#">답글쓰기</a>
+				<a href="/board/write/boardParent=${boardDto.boardParent}">답글쓰기</a>
 				
 				<c:if test="${owner}">
 				<!-- 내가 작성한 글이라면 수정과 삭제 메뉴를 출력 -->

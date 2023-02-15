@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring12.dto.BoardDto;
+import com.kh.spring12.vo.PaginationVO;
 
 @Repository
 public class BoardDao {
@@ -37,19 +38,18 @@ public class BoardDao {
 		}
 	};
 	
+
 	//공지사항만 조회하는 기능
-	public List<BoardDto> selecNoticeList(int begin, int end){
-		String sql = "select * from ("
-				+ 	"select rownum m, TMP.* from ("
-				+ 	"select * from board where board_head='공지' "
-				+ "order by board_no asc"
-				+ ")TMP )"
-				+ "where m between ? and ?";
-		Object[] param = { begin, end} ;
-		return jdbcTemplate.query(sql,  mapper,param); 
-		  
-		
-	}
+		public List<BoardDto> selectNoticeList(int begin, int end) {
+			String sql = "select * from ("
+								+ "select rownum rn, TMP.* from ("
+									+ "select * from board where board_head='공지' "
+									+ "order by board_no desc"
+								+ ")TMP"
+							+ ") where rn between ? and ?";
+			Object[] param = {begin, end};
+			return jdbcTemplate.query(sql, mapper, param);
+		}
 	
 	public List<BoardDto> selectList() {
 		//String sql = "select * from board order by board_no asc";
@@ -62,8 +62,10 @@ public class BoardDao {
 	
 	public List<BoardDto> selectList(String column, String keyword) {
 		String sql = "select * from board "
-						+ "where instr(#1, ?) > 0 "
-						+ "order by board_no desc";
+				+ "where instr(#1, ?) > 0 "
+				+ "connect by prior board_no=board_parent "
+				+ "start with board_parent is null "
+				+ "order siblings by board_group desc, board_no asc";
 		sql = sql.replace("#1", column);
 		Object[] param = {keyword};
 		return jdbcTemplate.query(sql, mapper, param);
@@ -86,12 +88,14 @@ public class BoardDao {
 	public void insert(BoardDto boardDto) {
 		String sql = "insert into board("
 				+ "board_no, board_writer, board_title, board_content, "
-				+ "board_head, board_time, board_read, board_like, board_reply) "
-				+ "values(?, ?, ?, ?, ?, sysdate, 0, 0, 0)";
+				+ "board_head, board_time, board_read, board_like, board_reply, "
+				+ "board_group, board_parent, board_depth) "
+				+ "values(?, ?, ?, ?, ?, sysdate, 0, 0, 0, ?, ?, ?)";
 		Object[] param = {
 			boardDto.getBoardNo(), boardDto.getBoardWriter(),
 			boardDto.getBoardTitle(), boardDto.getBoardContent(),
-			boardDto.getBoardHead()
+			boardDto.getBoardHead(),boardDto.getBoardGroup(),
+			boardDto.getBoardParent(), boardDto.getBoardDepth()
 		};
 		jdbcTemplate.update(sql, param);
 	}
@@ -122,6 +126,58 @@ public class BoardDao {
 		return jdbcTemplate.update(sql, param) > 0;
 	}
 	
+	//페이징 적용된 조회 및 카운트
+	public int selectCount() {
+		String sql = "select count(*) from board"; 
+		return jdbcTemplate.queryForObject(sql, int.class); 
+	}
+	
+	public List<BoardDto> selectList(PaginationVO vo)
+	{
+		if(vo.isSearch()) // 검색
+		{
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from board "
+					+ "where instr(#1, ?) > 0 "
+					+ "connect by prior board_no=board_parent "
+					+ "start with board_parent is null "
+					+ "order siblings by board_group desc, board_no asc"
+				+ ")TMP"
+			+ ") where rn between ? and ?";
+			sql = sql.replace("#1",vo.getColumn());
+			Object[] param = {vo.getKeyword(),vo.getBegin(),vo.getEnd()};
+			return jdbcTemplate.query(sql, mapper,param);
+			
+		}
+		else {
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from board "
+					+ "connect by prior board_no=board_parent "
+					+ "start with board_parent is null "
+					+ "order siblings by board_group desc, board_no asc"
+				+ ")TMP"
+			+ ") where rn between ? and ?";
+			Object[] param = {vo.getBegin(),vo.getEnd()}; 
+			return jdbcTemplate.query(sql, mapper,param); 
+		}
+	}
+	
+	//페이징 적용된 조회 및 카운트
+	public int selectCount(PaginationVO vo) {
+		if(vo.isSearch())
+		{
+			String sql = "select count(*) from board where instr(#1,?) >0";
+			sql = sql.replace("#1",vo.getColumn());
+			Object[] param = {vo.getKeyword()}; 
+			return jdbcTemplate.queryForObject(sql, int.class,param); 
+		}
+		else{
+			String sql = "select count(*) from board";
+			return jdbcTemplate.queryForObject(sql,int.class);
+		}
+	}
 }
 
 

@@ -39,4 +39,16 @@ public class BoardDto {
 			return writeStr.substring(0, 10);//"yyyy-MM-dd"
 		}
 	}
+	
+	// 새글인지 여부를 확인하는 명령
+	public boolean isNew() {
+		return boardParent == null; 
+	}
+	
+	// 답글인지 여부를 확인하는 명령
+	// el 에서도 반환이 가능하다 ${boardDto.boardNo}처럼
+	// isAnswer의 경우 ${boardDto.answer}이 가능하다. 
+	public boolean isAnswer() {
+		return !isNew();  
+	}
 }

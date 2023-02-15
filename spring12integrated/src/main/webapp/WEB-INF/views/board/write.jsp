@@ -4,9 +4,21 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<h1>게시글 작성</h1>
+<c:choose>
+	<c:when test="${boardParent==null}">
+		<h1>새글 작성</h1>
+	</c:when>
+	<c:otherwise>
+		<h1>답글 작성</h1>
+	</c:otherwise>
+</c:choose> 
+
 
 <form action="write" method="post">
+	<%-- 답글일 때는 정보가 하나 더 있어야한다.(boardParent) --%>
+	<c:if test="${boardParent!=null }">
+		<input type="hidden" name="boardParent"value="${boardParent}">
+	</c:if>
 	말머리 : 
 	<select name="boardHead">
 		<!-- 없음을 선택하면 값이 비어서 전송되므로 DB에 null로 들어감 -->

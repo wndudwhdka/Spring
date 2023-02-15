@@ -1,6 +1,7 @@
 package com.kh.spring12.controller;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring12.dao.BoardDao;
 import com.kh.spring12.dto.BoardDto;
+import com.kh.spring12.service.BoardService;
+import com.kh.spring12.vo.PaginationVO;
 
 @Controller
 @RequestMapping("/board")
@@ -26,22 +29,46 @@ public class BoardController {
 	@Autowired
 	private BoardDao boardDao;
 	
+	@Autowired
+	private BoardService boardService; 
+	
 	//목록 및 검색
+//	@GetMapping("/list")
+//	public String list(Model model, 
+//			@RequestParam(required = false, defaultValue = "boardTitle") String column, 
+//			@RequestParam(required = false, defaultValue = "") String keyword) {
+//		if(keyword.equals("")) {//키워드가 없다면 -> 목록
+//			model.addAttribute("list", boardDao.selectList());
+//		}
+//		else {//키워드가 있다면 -> 검색
+//			model.addAttribute("column", column);
+//			model.addAttribute("keyword", keyword);
+//			model.addAttribute("list", boardDao.selectList(column, keyword));
+//		}
+//		//검색 여부와 관계 없이 공지사항을 3개 조회해서 Model에 첨부
+//		model.addAttribute("noticeList",boardDao.selecNoticeList(1, 3));
+//		return "/WEB-INF/views/board/list.jsp";
+//	}
+	
+	// ModelAttribute는 자동 수신 외에 기능이 하나 더있다.
+	// Model에 자동으로 추가된다.
+	
 	@GetMapping("/list")
-	public String list(Model model, 
-			@RequestParam(required = false, defaultValue = "boardTitle") String column, 
-			@RequestParam(required = false, defaultValue = "") String keyword) {
-		if(keyword.equals("")) {//키워드가 없다면 -> 목록
-			model.addAttribute("list", boardDao.selectList());
-		}
-		else {//키워드가 있다면 -> 검색
-			model.addAttribute("column", column);
-			model.addAttribute("keyword", keyword);
-			model.addAttribute("list", boardDao.selectList(column, keyword));
-		}
-		//검색 여부와 관계 없이 공지사항을 3개 조회해서 Model에 첨부
-		model.addAttribute("noticeList",boardDao.selecNoticeList(1, 3));
-		return "/WEB-INF/views/board/list.jsp";
+	public String list(
+			@ModelAttribute("vo") PaginationVO vo, 
+			Model model) {
+		//vo에 딱 한 가지 없는 데이터가 게시글 개수(목록/검색이 다름)
+		int totalCount = boardDao.selectCount(vo);
+		vo.setCount(totalCount);
+		
+		//공지사항
+		model.addAttribute("noticeList", boardDao.selectNoticeList(1, 3));
+		
+		//게시글
+		List<BoardDto> list = boardDao.selectList(vo);
+		model.addAttribute("list", list);
+		
+		return "/WEB-INF/views/board/list2.jsp";
 	}
 	
 //	조회수 중복 방지 시나리오
@@ -106,23 +133,37 @@ public class BoardController {
 		return "/WEB-INF/views/board/detail.jsp";
 	}
 	
+//	@GetMapping("/write")
+//	public String write() {
+//		return "/WEB-INF/views/board/write.jsp";
+//	}
 	@GetMapping("/write")
-	public String write() {
-		return "/WEB-INF/views/board/write.jsp";
+	public String write(
+			@RequestParam(required = false) Integer boardParent,
+			Model model
+			)
+	{
+		model.addAttribute("boardParent",boardParent); 
+		return "/WEB-INF/views/board/write.jsp"; 
 	}
+	
+	
 	
 	@PostMapping("/write")
 	public String write(
 			@ModelAttribute BoardDto boardDto,//3개(말머리,제목,내용)
 			HttpSession session, RedirectAttributes attr
 			) {
-		int boardNo = boardDao.sequence();
+		// 컨트롤러에서만 가능한 작업
+		// 사용자 요청처리
+		// 세션 사용
+		// 리다이렉트 관련 처리
+		// 그외 사용자 요철 처리 관련 도구 사용
 		String memberId = (String)session.getAttribute("memberId");
-		
-		boardDto.setBoardNo(boardNo);
 		boardDto.setBoardWriter(memberId);
 		
-		boardDao.insert(boardDto);
+		// 나머지 일반 프로그래밍 코드는 서비스를 호출하여 처리
+		int boardNo = boardService.write(boardDto); 
 		
 		attr.addAttribute("boardNo", boardNo);
 		return "redirect:detail";
