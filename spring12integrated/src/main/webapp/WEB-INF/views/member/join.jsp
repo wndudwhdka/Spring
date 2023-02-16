@@ -4,7 +4,7 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>가입 정보 입력 </h1>
-<form action="join" method="post">
+<form action="join" method="post" enctype="multipart/form-data">
 	아이디 : <input type="text"name="memberId"required><br><br>
 	비밀번호 : <input type="text"name="memberPw"required><br><br>
 	닉네임 : <input type="text"name="memberNick"required><br><br>
@@ -14,6 +14,7 @@
 	우편번호 : <input type="text"name="memberPost"required><br><br>
 	기본주소 : <input type="text"name="memberBasicAddr"required><br><br>
 	상세주소 : <input type="text"name="memberDetailAddr"required><br><br>
+	프로필 이미지 : <input type="file"name="attach"accept=".png,.gif,.jpg"required>
 	<button>입력</button>
 </form>
 
