@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring12.dao.MemberDao;
+import com.kh.spring12.dao.MemberProfileDao;
 import com.kh.spring12.dto.MemberDto;
 import com.kh.spring12.service.MemberService;
 
@@ -31,7 +32,8 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
-	
+	@Autowired
+	private MemberProfileDao memberProfileDao; 
 	
 	@GetMapping("/join")
 	public String join(){
@@ -102,7 +104,8 @@ public class MemberController {
 	public String mypage(Model model,HttpSession session) {
 		String memberId = (String) session.getAttribute("memberId");
 		MemberDto memberDto = memberDao.selectOne(memberId); 
-		model.addAttribute("memberDto",memberDto);	
+		model.addAttribute("memberDto",memberDto);
+		model.addAttribute("profile",memberProfileDao.selectOne(memberId));
 		return "/WEB-INF/views/member/mypage.jsp"; 
 	}
 	

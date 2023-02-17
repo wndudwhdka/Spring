@@ -20,6 +20,8 @@ public class PocketmonController {
 	@Autowired
 	private PocketmonDao pocketmonDao;
 	
+
+	
 	@RequestMapping("/insertInput")
 	public String insertInput() {
 		return "/WEB-INF/views/pocketmon/insertInput.jsp";
@@ -85,5 +87,6 @@ public class PocketmonController {
 		attr.addAttribute("no", pocketmonDto.getNo());
 		return "redirect:detail"; 
 	}
-			
+	
+	
 }

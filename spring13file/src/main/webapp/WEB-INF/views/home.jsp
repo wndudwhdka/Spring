@@ -49,3 +49,14 @@
 	<input type="file" name="attaches" multiple accept="image/">
 	<button>전송</button>
 </form>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:forEach var="pocketmonImageDto" items="${list}">
+	<a href="/download?attachmentNp=${pocketmonImageDto.attachmentNo}">
+	<img width="100" height="100" src="/download?attachmentNo=${pocketmonImageDto.attachmentNo}">
+	</a>
+	&nbsp&nbsp
+</c:forEach>
+
+
+

@@ -2,18 +2,28 @@ package com.kh.spring13.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring13.dao.AttachmentDao;
 import com.kh.spring13.dao.PocketmonDao;
 import com.kh.spring13.dao.PocketmonImageDao;
+import com.kh.spring13.dao.PocketmonWithImageDao;
 import com.kh.spring13.dto.AttachmentDto;
 import com.kh.spring13.dto.PocketmonDto;
 import com.kh.spring13.dto.PocketmonImageDto;
@@ -30,11 +40,15 @@ public class FileController {
 	@Autowired
 	private PocketmonImageDao pocketmonImageDao; 
 	
+//	@GetMapping("/")
+//	public String home() {
+//		return "/WEB-INF/views/home.jsp";
+//	}
 	@GetMapping("/")
-	public String home() {
+	public String home(Model model) {
+		model.addAttribute("list", pocketmonImageDao.selectList());
 		return "/WEB-INF/views/home.jsp";
 	}
-	
 	
 	// 파일 업로드는 postMapping만 가능하다 
 	// - 전송된 파일은 MultipartFile이라는 형태로 수신이 가능하다. 
@@ -121,4 +135,112 @@ public class FileController {
 	}
 	
 	
+	
+	//파일 다운로드를 위해 알아야 할 내용
+	// @Controller에서는 아무 말도 없으면 View를 반환한다.
+	// 다운로드를 위해서는 Views가 아니라 파일을 줘야 한다(일반적이지 않다)
+	// view를 반환하지 않기 위해 @ResponsceBody를 추가한다
+	// 파일의 정보와 내용을 직접 설정해서 반환해야 한다(HTTP 헤더+바디)
+	// 헤더와 바디를 직접 설정해서 반환하려면 ResponseEntity를 사용해야 한다 
+	
+	// 아래와 같이 만들면 헤더는 설정이 불가 
+//	@GetMapping("/download")
+//	@ResponseBody
+//	public String download1()
+//	{
+//		return "download1 실행"; 
+//	}
+	
+	@GetMapping("/download2")
+	@ResponseBody
+	public ResponseEntity<String> download2(){
+		//[1] 요청 결과 형태를 정의할 수 있다. 
+		//return ResponseEntity.ok("download2");// 요청성공 및 반환완료
+		
+		//못찾음(404) 반환
+		//return ResponseEntity.notFound().build();
+		
+		//권한없음(403) 반환
+		//return ResponseEntity.status(403).build();
+		
+		//[2] 원하는 형태로 헤더를 설정할 수 있다. 
+		return ResponseEntity.ok() // status(200)과 같다
+						.header("hkacademy","web-developer") //한ㄱㄹ이 안됨
+						.build(); 
+	}
+	
+	// 실제 파일 다운로드 처리 메소드
+	// - 사용자에게 첨부파일 번호(attachmentNo)를 달라고 한다.
+	// - attachmentNo를 사용하여 DB를 조회한다.
+	// - 없으면 사용자에게 404 notFound를 반환한다. 
+	// - 있으면 실제 파일을 불러와야 한다.(single byte 입력) 
+	// - apache commons IO 라이브러리를 사용(Spring에 등록되어 있지 않아서 직접 임포트해야한다)ㅉ
+	// - 헤더에 다음정보를 설정한다.
+	// 	- 파일명(Content-Disposition)
+	//  - 파일크기(Content-Length)
+	//  - 파일유형(Content-Type)
+	//  - 파일인코딩(Content-Encoding)
+	// - 바디에 파일의 실제 데이터를 첨부한 뒤 반환하면 스프링이 나머지는 처리한다. 
+	@GetMapping("/download")
+	@ResponseBody
+	public ResponseEntity<ByteArrayResource> download(@RequestParam int attachmentNo) throws IOException{
+		
+		
+		//DB 조회  
+		// 헤더부분
+		AttachmentDto attachmentDto = attachmentDao.selectOne(attachmentNo);
+		if(attachmentDto==null) // 없으면 404
+		{
+			return ResponseEntity.notFound().build();
+		}
+		
+		// 파일 찾기
+		// 바디부분
+		File dir = new File("D:/upload"); 
+		File target = new File(dir,String.valueOf(attachmentNo)); 
+		
+		//보낼 데이터 생성
+		byte[] data = FileUtils.readFileToByteArray(target);
+		ByteArrayResource resource = new ByteArrayResource(data);
+		
+		//헤더와 바디를 설정하며 ResponseEntity를 만들어 반환 (통신은 문자열밖에 안된다)
+//		return ResponseEntity.ok()
+//				//.header("Content-Type", attachmentDto.getAttachmentType())
+//				.header("Content-Type", "application/octet-stream")
+//				.header("Content-Length",String.valueOf(attachmentDto.getAttachmentSize()))
+//				.header("Content-Disposition","attachment: filename=\""+URLEn+"\"")
+//				.header("Content-Encoding","UTF-8")
+//			.body(resource); 
+		
+		// 제공되는 모든 사웃와 명령을 동원해서 최대한 오류 없이 편하게 작성
+		return ResponseEntity.ok()
+//				.header(HttpHeaders.CONTENT_TYPE,
+//				MediaType.APPLICATION_OCTET_STREAM_VALUE)
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.contentLength(attachmentDto.getAttachmentSize())
+				.header(HttpHeaders.CONTENT_ENCODING,
+							StandardCharsets.UTF_8.name())
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+						ContentDisposition.attachment()
+							.filename(
+									attachmentDto.getAttachmentName(),
+									StandardCharsets.UTF_8
+									).build().toString()
+				)
+				.body(resource);
+				
+	}
+	
+	@Autowired
+	private PocketmonWithImageDao pocketmonWithImageDao;
+	
+	@GetMapping("/pocketmon/list")
+	public String pocketmonList(Model model)
+	{
+		model.addAttribute("list",pocketmonWithImageDao.selectList());
+		return "/WEB-INF/views/list.jsp";
+	}
+	
+	
 }
+

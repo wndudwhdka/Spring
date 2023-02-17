@@ -2,6 +2,7 @@ package com.kh.spring13.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,5 +33,10 @@ public class PocketmonImageDao{
 		Object[] param = {imageDto.getPocketmonNo(),imageDto.getAttachmentNo()};
 		jdbcTemplate.update(sql,param);		
 	}
+
 	
+	public List<PocketmonImageDto> selectList(){
+		String sql ="select * from pocketmon_image"; 
+		return jdbcTemplate.query(sql,mapper); 
+	}
 }
