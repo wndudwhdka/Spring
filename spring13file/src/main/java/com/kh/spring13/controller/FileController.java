@@ -228,7 +228,6 @@ public class FileController {
 									).build().toString()
 				)
 				.body(resource);
-				
 	}
 	
 	@Autowired
