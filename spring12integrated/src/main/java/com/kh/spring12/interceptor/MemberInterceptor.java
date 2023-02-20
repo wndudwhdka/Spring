@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.kh.spring12.advice.RequireLoginException;
+
 //비회원이 회원 기능에 접근하는 것을 차단하기 위한 인터셉터 
 @Service
 public class MemberInterceptor implements HandlerInterceptor {
@@ -25,8 +27,9 @@ public class MemberInterceptor implements HandlerInterceptor {
 		return true;
 		}
 		else{// 비회원이면 - 로그인 페이지로 이동시키면서 차단(리다이렉트)
-		response.sendRedirect("/member/login");// 리다이렉트 코드 return "redirect:/member/login"과 같다
-		return false;
+//		response.sendRedirect("/member/login");// 리다이렉트 코드 return "redirect:/member/login"과 같다
+//		return false;
+			throw new RequireLoginException("로그인후 이용 가능합니다."); 
 		}
 		 
 	}

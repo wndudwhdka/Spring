@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.kh.spring12.advice.RequirePermissionException;
+
 @Service
 public class AdminInterceptor implements HandlerInterceptor{
 
@@ -25,8 +27,11 @@ public class AdminInterceptor implements HandlerInterceptor{
 		}
 		else // 레벨이 관리자가 아니거나 아이디가 미접속인 경우 
 		{
-			response.sendError(403, "error가 발생했습니다.");
-			return false; 
+			// response.sendError(403);
+			// response.sendError(HttpStatus.FORBIDDEN.value());
+			//return false;
+			//response.sendError(403, "error가 발생했습니다.");
+			throw new RequirePermissionException("관리자만 이용 가능합니다"); 
 		}
 	}
 }

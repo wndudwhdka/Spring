@@ -11,7 +11,7 @@
 		<img width="200"height="200"src="/attachment/download?attachmentNo=${profile.attachmentNo}">
 	</c:when>
 	<c:otherwise>
-		<img width="200"height="200"src="/imgage/user.jpg">
+		<img width="200"height="200"src="/static/image/user.jpg">
 	</c:otherwise>
 </c:choose>
 

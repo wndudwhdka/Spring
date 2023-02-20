@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.spring13.configuration.FileUploadProperties;
 import com.kh.spring13.dao.AttachmentDao;
 import com.kh.spring13.dao.PocketmonDao;
 import com.kh.spring13.dao.PocketmonImageDao;
@@ -39,6 +42,22 @@ public class FileController {
 	
 	@Autowired
 	private PocketmonImageDao pocketmonImageDao; 
+	
+	@Autowired
+	private FileUploadProperties fileUploadProperties;
+	
+	private File dir;
+	// java 문법이 spring 문법보다 먼저 실행된다. 
+	// 따라서 먼저 생성하게 하기 위해선
+	
+	@PostConstruct // 초기화메소드 
+	public void init() {
+		dir = new File(fileUploadProperties.getPath());
+		dir.mkdirs();
+	}
+	
+	
+	
 	
 //	@GetMapping("/")
 //	public String home() {
@@ -67,10 +86,7 @@ public class FileController {
 			// 파일 번호 생성
 			int attachmentNo = attachmentDao.sequence();
 			
-			// dir 디렉토리를 D:의 하위로 upload라는 이름으로 지정한다음
-			File dir = new File("D:/upload");
-			dir.mkdir(); // 만든다 
-			
+			// dir 디렉토리를 D:의 하위로 upload라는 이름으로 지정한다음		
 			File target = new File(dir,attach.getOriginalFilename());
 			attach.transferTo(target);
 			
@@ -99,10 +115,7 @@ public class FileController {
 		int attachmentNo = attachmentDao.sequence(); //입력 파일 번호 
 
 		if(!attach.isEmpty()) {
-			// 2. 첨부파일 저장 및 등록(첨부 파일이 있으면)
-			File dir = new File("D:/upload"); 
-			dir.mkdirs(); 
-			
+			// 2. 첨부파일 저장 및 등록(첨부 파일이 있으면)			
 			File target = new File(dir,String.valueOf(attachmentNo)); 
 			attach.transferTo(target); 
 			
@@ -196,7 +209,6 @@ public class FileController {
 		
 		// 파일 찾기
 		// 바디부분
-		File dir = new File("D:/upload"); 
 		File target = new File(dir,String.valueOf(attachmentNo)); 
 		
 		//보낼 데이터 생성

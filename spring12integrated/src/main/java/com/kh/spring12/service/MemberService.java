@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.spring12.dto.MemberDto;
+import com.kh.spring12.configuration.FileUploadProperties;
 import com.kh.spring12.dao.AttachmentDao;
 import com.kh.spring12.dao.MemberProfileDao;
 import com.kh.spring12.dto.AttachmentDto;
+import com.kh.spring12.dto.MemberDto;
 import com.kh.spring12.dto.MemberProfileDto;
 
 @Service
@@ -24,11 +25,15 @@ public class MemberService {
 	@Autowired 
 	private MemberProfileDao memberProfileDao;
 	
+	@Autowired
+	private FileUploadProperties fileUploadProperties;
+	
 	// 변경이 불가능하도록 지정
-	private final File dir = new File("D:/upload"); 
+	private File dir; 
 	
 	@PostConstruct // 최초 1번만 실행되는 메소드 
 	public void init() {
+		dir = new File(fileUploadProperties.getPath()); 
 		dir.mkdirs();
 	}
 	
