@@ -6,6 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>내가 만든 홈페이지</title>
+<!-- 디자인 ㅌ파일 불러오기 -->
+<link rel="stylesheet" type="text/css" href="/static/css/commons.css">
 </head>
 <body>
 	<%-- 

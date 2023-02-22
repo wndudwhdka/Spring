@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring12.configuration.FileUploadProperties;
 import com.kh.spring12.dao.AttachmentDao;
+import com.kh.spring12.dao.MemberDao;
 import com.kh.spring12.dao.MemberProfileDao;
 import com.kh.spring12.dto.AttachmentDto;
 import com.kh.spring12.dto.MemberDto;
@@ -18,6 +19,9 @@ import com.kh.spring12.dto.MemberProfileDto;
 
 @Service
 public class MemberService {
+	
+	@Autowired
+	private MemberDao memberDao;
 	
 	@Autowired
 	private AttachmentDao attachmentDao; 
@@ -39,6 +43,11 @@ public class MemberService {
 	
 	public void join(MemberDto memberDto, MultipartFile attach) throws IllegalStateException, IOException
 	{
+		
+		//회원 가입
+		memberDao.join(memberDto);
+		System.out.println("들어왔어요");
+		
 		if(!attach.isEmpty()) // 만약 사진이 있으면
 		{
 			// 파일번호 생성 
@@ -62,6 +71,7 @@ public class MemberService {
 						.build());
 															
 		}
+		
 	}
 	
 	

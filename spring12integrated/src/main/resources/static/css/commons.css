@@ -1,0 +1,231 @@
+@charset "UTF-8";
+/*
+    commons.css    
+
+    이 파일에는 자주 사용하는 작은 화면에 대한 클래스들이 존재한다.
+    
+    제작일자 : 2023-02-22
+    제작자 : 피카츄
+
+*/
+* { 
+    box-sizing: border-box;
+    font-family: '굴림'; 
+}
+
+.container {
+    width:50%;
+    margin:0 auto;
+}
+
+.container-200{
+    width:200px;
+    margin:0 auto;
+}
+.container-300{
+    width:300px;
+    margin:0 auto;
+}
+.container-400{
+    width:400px;
+    margin:0 auto;
+}
+.container-500{
+    width:500px;
+    margin:0 auto;
+}
+.container-600{
+    width:600px;
+    margin:0 auto;
+}
+.container-700{
+    width:700px;
+    margin:0 auto;
+}
+.container-800{
+    width:800px;
+    margin:0 auto;
+}
+.container-900{
+    width:900px;
+    margin:0 auto;
+}
+.container-1000{
+    width:1000px;
+    margin:0 auto;
+}
+
+.container > .row{
+    margin:10px 0px;
+}
+/* row와 row 사이에는 일정한 간격을 설정 */
+.row {
+    margin:10px 0px;
+}
+
+
+.form-input {
+    font-size: 20px;
+    padding: 0.5em;
+    outline: none;/*선택 시 강조 효과 제거*/
+    border: 1px solid #636e72;
+    border-radius: 0.1em;
+}
+.form-input:focus{/*커서가 위치했을 때 작동*/
+    border-color: black;
+}
+
+/*
+    버튼은 역할에 따라 색상이 다르다
+    - 긍정 버튼은 초록~파랑 계열
+    - 부정 버튼은 주황~빨강 계열
+    - 중립 버튼은 흑백 계열
+*/
+.form-btn {
+    font-size: 15px;
+    padding: 0.5em;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.1em;
+    cursor: pointer;
+}
+
+.positive {
+    background-color: #0984e3;
+    border-color: #0984e3;
+    color: white;
+}
+.negative {
+    background-color: #d63031;
+    border-color: #d63031;
+    color: white;
+}
+.neutral {
+    background-color: #dfe6e9;
+    border-color: #dfe6e9;
+    color: black;
+}
+.form-btn.positive{
+    background-color: #0984e3;
+    border-color: #0984e3;
+    color: white;
+}
+.form-btn.negative{
+    background-color: #d63031;
+    border-color: #d63031;
+    color: white;
+}
+.form-btn.neutral {
+    background-color: #dfe6e9;
+    border-color: #dfe6e9;
+    color: black;
+}
+
+/* 
+            a 태그를 버튼과 동일한 모양으로 만들 수 있도록 개조 
+            - display-inline 이므로 block 속성이 들어가게 개조(꼭 설정)
+            - text-align으로 글자를 가운데 정렬
+ */
+a.form-btn{ /* a태그 들중 form-btn */
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+}
+
+form-btn:hover{
+    filter:brightness(105%);
+}
+
+/* 폭 설정 클래스 */
+.w-100 {width:100%;}
+.w-90 {width:90%;}
+.w-80 {width:80%;}
+.w-75 {width:75%;}
+.w-70 {width:70%;}
+.w-65 {width:65%;}
+.w-60 {width:60%;}
+.w-50 {width:50%;}
+.w-40 {width:40%;}
+.w-30 {width:30%;}
+.w-25 {width:25%;}
+.w-20 {width:20%;}
+.w-10 {width:10%;}
+.h-100{height:100%;}
+.h-90{height:90%;}
+.h-80{height:80%;}
+.h-75{height:75%;}
+.h-70{height:70%;}
+.h-65{height:65%;}
+.h-60{height:60%;}
+.h-50{height:50%;}
+.h-40{height:40%;}
+.h-30{height:30%;}
+.h-25{height:25%;}
+.h-20{height:20%;}
+
+/* 내부 요소 정렬 클래스 */
+.center {text-align: center;}
+.left {text-align: left;}
+.right {text-align: right;}
+
+
+/* 
+        외부 여백(margin)을 부여할 수 있도록 설정(10~50px)
+        .mt - margin top
+        .mb - margin bottom 
+        .ms - margin start 
+        .me - margin end
+        
+        내부 여백(padding)을 부여할 수 있도록 설정(10~50px)
+        .pt - padding top
+        .pb - padding bottom 
+        .ps - padding start(left)
+        .pe - padding end(right)
+    */
+    .mt-10 {margin-top:10px;}
+    .mt-20 {margin-top:20px;}
+    .mt-30 {margin-top:30px;}
+    .mt-40 {margin-top:40px;}
+    .mt-50 {margin-top:50px;}
+    
+    .mb-10 {margin-bottom:10px;}
+    .mb-20 {margin-bottom:20px;}
+    .mb-30 {margin-bottom:30px;}
+    .mb-40 {margin-bottom:40px;}
+    .mb-50 {margin-bottom:50px;}
+    
+    .ms-10 {margin-left:10px;}
+    .ms-20 {margin-left:20px;}
+    .ms-30 {margin-left:30px;}
+    .ms-40 {margin-left:40px;}
+    .ms-50 {margin-left:50px;}
+
+    .me-10 {margin-right:10px;}
+    .me-20 {margin-right:20px;}
+    .me-30 {margin-right:30px;}
+    .me-40 {margin-right:40px;}
+    .me-50 {margin-right:50px;}
+
+    .pt-10 {padding-top:10px;}
+    .pt-20 {padding-top:20px;}
+    .pt-30 {padding-top:30px;}
+    .pt-40 {padding-top:40px;}
+    .pt-50 {padding-top:50px;}
+
+    .pb-10 {padding-bottom:10px;}
+    .pb-20 {padding-bottom:20px;}
+    .pb-30 {padding-bottom:30px;}
+    .pb-40 {padding-bottom:40px;}
+    .pb-50 {padding-bottom:50px;}
+
+    .ps-10 {padding-left:10px;}
+    .ps-20 {padding-left:20px;}
+    .ps-30 {padding-left:30px;}
+    .ps-40 {padding-left:40px;}
+    .ps-50 {padding-left:50px;}
+
+    .pe-10 {padding-right:10px;}
+    .pe-20 {padding-right:20px;}
+    .pe-30 {padding-right:30px;}
+    .pe-40 {padding-right:40px;}
+    .pe-50 {padding-right:50px;}

@@ -21,6 +21,7 @@ public class ErrorController {
 	// - 컨트롤러에서 제공받는 도구들을 모두 사용할 수 있다. 
 	@ExceptionHandler(Exception.class)
 	public String error(Exception ex) { 
+		ex.printStackTrace();
 		return "/WEB-INF/views/error/sorry.jsp";
 	}	
 
