@@ -5,187 +5,198 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-${vo}
-
-<!-- 제목 -->
-<h1>자유 게시판2</h1>
-<h5>남을 비방하는 경우 예고 없이 삭제될 수 있습니다</h5>
-
-<h3><a href="write">글쓰기</a></h3>
-
-<!-- 테이블 -->
-<table border="1" width="800">
-	<thead>
-		<tr>
-			<th>번호</th>
-			<th width="40%">제목</th>
-			<th align="left">작성자</th>
-			<th>작성일</th>
-			<th>조회수</th>
-			<th>좋아요</th>
-			<th>그룹</th>
-			<th>대상</th>
-			<th>차수</th>
-		</tr>
-	</thead>
-	<tbody align="center">
-		<!-- 공지사항을 출력 -->
-		<c:forEach var="boardDto" items="${noticeList}">
-		<tr bgcolor="#dfe6e9">
-			<td>${boardDto.boardNo}</td>
-			<td align="left">
-				<!-- 제목을 누르면 상세로 이동 -->
-				<a href="detail?boardNo=${boardDto.boardNo}">
+<div class="container-900">
+    <div class="row center">
+        <h1>자유 게시판</h1>
+    </div>
+    <div class="row center">
+        남을 비방하는 경우 예고 없이 삭제될 수 있습니다
+    </div>
+    <div class="row right">
+        <a href="write" class="form-btn positive">글쓰기</a>
+    </div>
+    <div class="row">
+        <table class="table table-border">
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th class="w-40">제목</th>
+                    <th class="left">작성자</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                    <th>좋아요</th>
+                </tr>
+            </thead>
+            <tbody class="center">
+            
+            	<!-- 공지사항을 출력 -->
+				<c:forEach var="boardDto" items="${noticeList}">
+				<tr>
+					<td>${boardDto.boardNo}</td>
+					<td class="left">
+						<!-- 제목을 누르면 상세로 이동 -->
+						<a href="detail?boardNo=${boardDto.boardNo}" class="link">
+							
+							<c:if test="${boardDto.boardHead != null}">
+								<!-- 말머리가 있으면 출력 -->
+								[${boardDto.boardHead}]
+							</c:if>
+							
+							${boardDto.boardTitle}
+						</a>
+					</td>
+					<td class="left">${boardDto.boardWriter}</td>
 					
-					<c:if test="${boardDto.boardHead != null}">
-						<!-- 말머리가 있으면 출력 -->
-						[${boardDto.boardHead}]
-					</c:if>
+					<%-- DTO에 만든 가상의 Getter 메소드를 불러 처리 --%>
+					<td>${boardDto.boardTimeAuto}</td>
 					
-					${boardDto.boardTitle}
-				</a>
-			</td>
-			<td align="left">${boardDto.boardWriter}</td>
-			
-			<%-- DTO에 만든 가상의 Getter 메소드를 불러 처리 --%>
-			<td>${boardDto.boardTimeAuto}</td>
-			
-			<td>${boardDto.boardRead}</td>
-			<td>${boardDto.boardLike}</td>
-		</tr>
-		</c:forEach>
-	
-		<!-- 검색 또는 목록 결과를 출력 -->
-		<c:forEach var="boardDto" items="${list}">
-		<tr>
-			<td>${boardDto.boardNo}</td>
-			<td align="left">
-				<!-- boardDepth만큼 띄어쓰기를 실시 -->
-				<c:forEach var="i" begin="1" end="${boardDto.boardDepth}">
-					&nbsp;&nbsp;
+					<td>${boardDto.boardRead}</td>
+					<td>${boardDto.boardLike}</td>
+				</tr>
 				</c:forEach>
-				<!-- boardDepth가 1 이상일 경우만 답글 표식을 추가 -->
-				<c:if test="${boardDto.boardDepth > 0}">
-					→
-				</c:if>
-			
-				<!-- 제목을 누르면 상세로 이동 -->
-				<a href="detail?boardNo=${boardDto.boardNo}">
+				
+				<!-- 검색 또는 목록 결과를 출력 -->
+				<c:forEach var="boardDto" items="${list}">
+				<tr>
+					<td>${boardDto.boardNo}</td>
+					<td class="left">
+						<!-- boardDepth만큼 띄어쓰기를 실시 -->
+						<c:forEach var="i" begin="1" end="${boardDto.boardDepth}">
+							&nbsp;&nbsp;
+						</c:forEach>
+						<!-- boardDepth가 1 이상일 경우만 답글 표식을 추가 -->
+						<c:if test="${boardDto.boardDepth > 0}">
+							→
+						</c:if>
 					
-					<c:if test="${boardDto.boardHead != null}">
-						<!-- 말머리가 있으면 출력 -->
-						[${boardDto.boardHead}]
-					</c:if>
+						<!-- 제목을 누르면 상세로 이동 -->
+						<a href="detail?boardNo=${boardDto.boardNo}" class="link">
+							
+							<c:if test="${boardDto.boardHead != null}">
+								<!-- 말머리가 있으면 출력 -->
+								[${boardDto.boardHead}]
+							</c:if>
+							
+							${boardDto.boardTitle}
+						</a>
+					</td>
+					<td class="left">${boardDto.boardWriter}</td>
 					
-					${boardDto.boardTitle}
-				</a>
-			</td>
-			<td align="left">${boardDto.boardWriter}</td>
-			
-			<%-- DTO에 만든 가상의 Getter 메소드를 불러 처리 --%>
-			<td>${boardDto.boardTimeAuto}</td>
-			
-			<td>${boardDto.boardRead}</td>
-			<td>${boardDto.boardLike}</td>
-			<td>${boardDto.boardGroup}</td>
-			<td>${boardDto.boardParent}</td>
-			<td>${boardDto.boardDepth}</td>
-		</tr>
-		</c:forEach>
-	</tbody>
-</table>
-
-<!-- 페이지 네비게이터 - vo에 있는 데이터를 기반으로 구현 -->
-<h2>
-	<c:choose>
-		<c:when test="${vo.first}">
-			<a>&laquo;</a>
-		</c:when>
-		<c:otherwise>
-			<a href="list?${vo.parameter}&page=1">&laquo;</a>
-		</c:otherwise>
-	</c:choose>
-	
-	<c:choose>
-		<c:when test="${vo.prev}">
-			<a href="list?${vo.parameter}&page=${vo.prevPage}">&lt;</a>
-		</c:when>
-		<c:otherwise>
-			<a>&lt;</a>
-		</c:otherwise>
-	</c:choose>
-
-	<c:forEach var="i" begin="${vo.startBlock}" end="${vo.finishBlock}">
-		<c:choose>
-			<c:when test="${vo.page == i}">
-				<a>${i}</a>
+					<%-- DTO에 만든 가상의 Getter 메소드를 불러 처리 --%>
+					<td>${boardDto.boardTimeAuto}</td>
+					
+					<td>${boardDto.boardRead}</td>
+					<td>${boardDto.boardLike}</td>
+				</tr>
+				</c:forEach>
+            </tbody>
+        </table>
+    </div>
+    <div class="row right">
+        <a href="write" class="form-btn positive">글쓰기</a>
+    </div>
+    <div class="row pagination">
+    
+    	<!-- 처음 -->
+    	<c:choose>
+			<c:when test="${vo.first}">
+				<a class="disabled">&laquo;</a>
 			</c:when>
 			<c:otherwise>
-				<a href="list?${vo.parameter}&page=${i}">${i}</a>
+				<a href="list?${vo.parameter}&page=1">&laquo;</a>
 			</c:otherwise>
 		</c:choose>
-	</c:forEach>	
+		
+		<!-- 이전 -->
+		<c:choose>
+			<c:when test="${vo.prev}">
+				<a href="list?${vo.parameter}&page=${vo.prevPage}">&lt;</a>
+			</c:when>
+			<c:otherwise>
+				<a class="disabled">&lt;</a>
+			</c:otherwise>
+		</c:choose>
+		
+        <!-- 숫자 -->
+        <c:forEach var="i" begin="${vo.startBlock}" end="${vo.finishBlock}">
+			<c:choose>
+				<c:when test="${vo.page == i}">
+					<a class="on">${i}</a>
+				</c:when>
+				<c:otherwise>
+					<a href="list?${vo.parameter}&page=${i}">${i}</a>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>	
+	
+		<!-- 다음 -->
+		<c:choose>
+			<c:when test="${vo.next}">
+				<a href="list?${vo.parameter}&page=${vo.nextPage}">&gt;</a>
+			</c:when>
+			<c:otherwise>
+				<a class="disabled">&gt;</a>
+			</c:otherwise>
+		</c:choose>
+		
+		<!-- 마지막 -->
+		<c:choose>
+			<c:when test="${vo.last}">
+				<a class="disabled">&raquo;</a>
+			</c:when>
+			<c:otherwise>
+				<a href="list?${vo.parameter}&page=${vo.totalPage}">&raquo;</a>
+			</c:otherwise>
+		</c:choose>
+    </div>
+    
+    <!-- 검색창 -->
+    <div class="row center">
+		<form action="list" method="get">
+		
+			<c:choose>
+				<c:when test="${vo.column == 'board_content'}">
+					<select name="column" class="form-input">
+						<option value="board_title">제목</option>
+						<option value="board_content" selected>내용</option>
+						<option value="board_writer">작성자</option>
+						<option value="board_head">말머리</option>
+					</select>
+				</c:when>
+				<c:when test="${vo.column == 'board_writer'}">
+					<select name="column" class="form-input">
+						<option value="board_title">제목</option>
+						<option value="board_content">내용</option>
+						<option value="board_writer" selected>작성자</option>
+						<option value="board_head">말머리</option>
+					</select>
+				</c:when>
+				<c:when test="${vo.column == 'board_head'}">
+					<select name="column" class="form-input">
+						<option value="board_title">제목</option>
+						<option value="board_content">내용</option>
+						<option value="board_writer">작성자</option>
+						<option value="board_head" selected>말머리</option>
+					</select>
+				</c:when>
+				<c:otherwise>
+					<select name="column" class="form-input">
+						<option value="board_title" selected>제목</option>
+						<option value="board_content">내용</option>
+						<option value="board_writer">작성자</option>
+						<option value="board_head">말머리</option>
+					</select>
+				</c:otherwise>
+			</c:choose>
+			
+			
+			<input class="form-input" type="search" name="keyword" placeholder="검색어" required value="${vo.keyword}">
+			
+			<button type="submit" class="form-btn neutral">검색</button>
+		</form>
+    </div>
+</div>
 
-	<c:choose>
-		<c:when test="${vo.next}">
-			<a href="list?${vo.parameter}&page=${vo.nextPage}">&gt;</a>
-		</c:when>
-		<c:otherwise>
-			<a>&gt;</a>
-		</c:otherwise>
-	</c:choose>
-	
-	<c:choose>
-		<c:when test="${vo.last}">
-			<a>&raquo;</a>
-		</c:when>
-		<c:otherwise>
-			<a href="list?${vo.parameter}&page=${vo.totalPage}">&raquo;</a>
-		</c:otherwise>
-	</c:choose>
-</h2>
 
-<!-- 검색창 -->
-<form action="list" method="get">
-	<c:choose>
-		<c:when test="${vo.column == 'board_content'}">
-			<select name="column">
-				<option value="board_title">제목</option>
-				<option value="board_content" selected>내용</option>
-				<option value="board_writer">작성자</option>
-				<option value="board_head">말머리</option>
-			</select>
-		</c:when>
-		<c:when test="${vo.column == 'board_writer'}">
-			<select name="column">
-				<option value="board_title">제목</option>
-				<option value="board_content">내용</option>
-				<option value="board_writer" selected>작성자</option>
-				<option value="board_head">말머리</option>
-			</select>
-		</c:when>
-		<c:when test="${vo.column == 'board_head'}">
-			<select name="column">
-				<option value="board_title">제목</option>
-				<option value="board_content">내용</option>
-				<option value="board_writer">작성자</option>
-				<option value="board_head" selected>말머리</option>
-			</select>
-		</c:when>
-		<c:otherwise>
-			<select name="column">
-				<option value="board_title" selected>제목</option>
-				<option value="board_content">내용</option>
-				<option value="board_writer">작성자</option>
-				<option value="board_head">말머리</option>
-			</select>
-		</c:otherwise>
-	</c:choose>
-	
-	
-	<input type="search" name="keyword" placeholder="검색어" required value="${vo.keyword}">
-	
-	<button>검색</button>
-</form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
