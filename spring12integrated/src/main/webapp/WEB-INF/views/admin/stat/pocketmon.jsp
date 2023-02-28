@@ -1,21 +1,23 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<table border="1"width="400">
+
+<div class="container-500">
+<table class="table table-slit">
 	<thead>
 		<tr>
-			<th>º”º∫</th>
-			<th>∏∂∏Æºˆ</th>
+			<th><h3>ÏÜçÏÑ±</h3></th>
+			<th><h3>ÎßàÎ¶¨Ïàò</h3></th>
 		</tr>
 	
 	</thead>
 	<tbody>
 		<c:forEach var="pocketmonStatDto" items="${list}">
-		<tr>
+		<tr class="center">
 			<td>
-			<a href="/pocketmon/list?column=type&keyword=${pocketmonStatDto.type}">
+			<a class="link" href="/pocketmon/list?column=type&keyword=${pocketmonStatDto.type}">
 			${pocketmonStatDto.type}
 			</a>
 			</td>
@@ -24,5 +26,5 @@
 		</c:forEach>
 	</tbody>
 </table>
-
+</div>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

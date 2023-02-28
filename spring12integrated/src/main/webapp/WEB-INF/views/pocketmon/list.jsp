@@ -4,9 +4,12 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <title>포켓몬 목록</title>
 
-<div class="container-900">
+<div class="container-700">
 	<div class="row center">
 	<h1>포켓몬 목록</h1>
+	</div>
+		<div class="row right">
+		<a class="form-btn form-btn positive" href="insertInput">신규등록</a>
 	</div>
 	<div class="row center">
 	<div class="row"></div>
@@ -30,30 +33,33 @@
 				</td>
 				<td>${pocketmonDto.type}</td>
 				<td>
-					<a class="link" href="edit?no=${pocketmonDto.no}">수정</a>
-					<a class="link" href="delete?no=${pocketmonDto.no}">삭제</a>
+					<a class="form-btn form-btn neutral" href="edit?no=${pocketmonDto.no}">수정</a>
+					<a class="form-btn form-btn neutral" href="delete?no=${pocketmonDto.no}">삭제</a>
 				</td>
 			</tr>
 			</c:forEach>
 		</tbody>
 	</table>
 	</div>
-	<br><br>
-	<a class="link"href="insertInput">신규둥록</a>
+
+	<div class="row center">
+		<form action="list"method="get">
+			<select name="column">
+				<option value="name">이름</option>
+				<option value="type">속성</option>		
+			</select>
+			<input type="text"name="keyword"placeholder="검색어"required>
+			<button class="form-btn form-btn neutral">검색</button>
+		</form>
+	</div>
+
 	
-	<form action="list"method="get">
-		<select name="column">
-			<option value="name">이름</option>
-			<option value="type">속성</option>		
-		</select>
-		<input type="text"name="keyword"placeholder="검색어"required>
-		<button>검색</button>
-	</form>
-	<c:forEach var="pocketmonDto" items="${list}">
-		<h2>
-		${pocketmonDto}
-		<a href="detail?no=${pocketmonDto.no}">보기</a>
-		</h2>
-	</c:forEach>
+	
+<%-- 	<c:forEach var="pocketmonDto" items="${list}"> --%>
+<!-- 		<h2> -->
+<%-- 		${pocketmonDto} --%>
+<%-- 		<a href="detail?no=${pocketmonDto.no}">보기</a> --%>
+<!-- 		</h2> -->
+<%-- 	</c:forEach> --%>
 </div>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>	

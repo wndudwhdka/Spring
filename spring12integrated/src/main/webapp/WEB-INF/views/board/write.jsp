@@ -6,10 +6,14 @@
 
 <c:choose>
 	<c:when test="${boardParent==null}">
+		<div class="row center">
 		<h1>새글 작성</h1>
+		</div>
 	</c:when>
 	<c:otherwise>
+		<div class="row center">
 		<h1>답글 작성</h1>
+		</div>
 	</c:otherwise>
 </c:choose> 
 
@@ -20,7 +24,6 @@
 		<c:if test="${boardParent!=null }">
 			<input type="hidden" name="boardParent" value="${boardParent}">
 		</c:if>
-        <h1 class="center">글 작성</h1>
      
         <div class="row">
             <h3 class="left">말머리</h3>

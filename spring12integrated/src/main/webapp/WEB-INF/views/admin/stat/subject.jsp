@@ -3,7 +3,9 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<table border="1"width="400">
+
+<div class="container-500">
+<table class="table table-slit">
 	<thead>
 		<tr>
 			<th>수업형태</th>
@@ -24,5 +26,5 @@
 		</c:forEach>
 	</tbody>
 </table>
-
+</div>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

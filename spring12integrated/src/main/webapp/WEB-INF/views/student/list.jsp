@@ -6,6 +6,9 @@
 	<div class="row center">
 	<h1>학생 목록</h1>
 	</div>
+	<div class="row right">
+		<a class="form-btn form-btn positive" href="insert">신규등록</a>
+	</div>
 	<c:choose>
 		<c:when test="${list.isEmpty()}">
 			<h2>데이터가 존재하지 않습니다.</h2>
@@ -15,7 +18,6 @@
 		<div class="row center">
 			<table class="table table-slit">
 				<thead>
-					<br><br>
 					<tr>
 						<th>번호</th>
 						<th>이름</th>
@@ -45,8 +47,8 @@
 				</tbody>
 			</table>
 		</div>
-		<a class="link" href="insert">신규등록</a>
 		
+		<div class="row center">
 		<form action="list"method="get">
 			<select name="column">
 				<option value="no">번호</option>
@@ -58,12 +60,14 @@
 			<input type="text" name="keyword" placeholder="검색어" required>
 			<button>검색</button>
 		</form>
-		<c:forEach var="studentDto" items="${list}">
-			<h2>
-			${studentDto}
-			<a class="link" href="detail?no=${studentDto.no}">보기</a>
-			</h2>
-		</c:forEach>
+		</div>
+
+<%-- 		<c:forEach var="studentDto" items="${list}"> --%>
+<!-- 			<h2> -->
+<%-- 			${studentDto} --%>
+<%-- 			<a class="link" href="detail?no=${studentDto.no}">보기</a> --%>
+<!-- 			</h2> -->
+<%-- 		</c:forEach> --%>
 		</c:otherwise>
 	</c:choose>
 </div>

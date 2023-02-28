@@ -7,10 +7,10 @@
 
 <div class="container-900">
     <div class="row center">
-        <h1>자유 게시판</h1>
+        <h2>자유 게시판</h2>
     </div>
     <div class="row center">
-        남을 비방하는 경우 예고 없이 삭제될 수 있습니다
+        <h5>남을 비방하는 경우 예고 없이 삭제될 수 있습니다</h5>
     </div>
     <div class="row right">
         <a href="write" class="form-btn positive">글쓰기</a>
@@ -92,10 +92,10 @@
             </tbody>
         </table>
     </div>
-    <div class="row right">
-        <a href="write" class="form-btn positive">글쓰기</a>
-    </div>
-    <div class="row pagination">
+<!--     <div class="row right"> -->
+<!--         <a href="write" class="form-btn positive">글쓰기</a> -->
+<!--     </div> -->
+    <div class="row pagination center">
     
     	<!-- 처음 -->
     	<c:choose>

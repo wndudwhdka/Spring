@@ -1,16 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/template/adminHeader.jsp"></jsp:include>
  
- <h1>로그인</h1>
+ <style>
+ 	<i class="fa-solid fa-asterisk"></i>
+ </style>
  
- <form action="login" method="post">
+ 
+ <div class="container-600">
+ 	<div class="row center">
+ 	<h2>로그인</h2><br>
+ 	</div>
+ 	<div class="row center">
+ 	<form action="login" method="post">
 	아이디 : <input type="text" name="memberId" required> <br><br>
 	비밀번호 : <input type="password" name="memberPw" required> <br><br>
-	<button>로그인</button>
-</form>
+	<button class="form-label form-btn form-btn neutral label">로그인</button>
+	</form>
+	</div>
+	<div class="row center">
+	<a class="form-btn form-btn neutral" href="/member/find">아이디찾기</a>
+	</div>
+</div>
 
-<h2><a href="/member/find">아이디가 기억나지 않습니다.</a></h2>
 
 <%-- 
 	본 페이지 접근법 두 가지 
@@ -28,4 +40,4 @@
 <c:if test="${param.mode== 'error'}">
 	<h1>에러가 발생했습니다.</h1>
 </c:if>
-<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/template/adminFooter.jsp"></jsp:include>

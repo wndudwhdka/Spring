@@ -15,18 +15,8 @@
 				<div class="row center">
 				<h1>과목 목록</h1>
 				</div>
-				<div class="row center">
-				<form action="list" method="get">
-					<select name="column">
-						<option value="no">번호</option>
-						<option value="name">과목</option>
-						<option value="period">기간</option>
-						<option value="price">가격</option>
-						<option value="type">방식</option>
-					</select> <input type="text" name="keyword" placeholder="검색어"
-						value="${keyword}">
-					<button class="form-btn form-btn positive ">검색</button>
-				</form>
+				<div class="row right">
+					<a class="form-btn form-btn positive" href="insert">신규등록</a>
 				</div>
 				<c:choose>
 					<c:when test="${list.isEmpty()}">
@@ -62,15 +52,29 @@
 						</c:forEach>
 					</tbody>
 				</table>
+				<div class="row center">
+				<form action="list" method="get">
+					<select name="column">
+						<option value="no">번호</option>
+						<option value="name">과목</option>
+						<option value="period">기간</option>
+						<option value="price">가격</option>
+						<option value="type">방식</option>
+					</select> <input type="text" name="keyword" placeholder="검색어"
+						value="${keyword}">
+					<button class="form-btn form-btn neutral ">검색</button>
+				</form>
 				</div>
-				<a class="link" href="insert">신규등록</a>
+				</div>
+
+				
 				<br>
 				<br>
-				<c:forEach var="subjectDto" items="${list}">
-					<h2>
-						${subjectDto} <a class="link" href="detail?np=${subjectDto.no}">보기</a>
-					</h2>
-				</c:forEach>
+<%-- 				<c:forEach var="subjectDto" items="${list}"> --%>
+<!-- 					<h2> -->
+<%-- 						${subjectDto} <a class="link" href="detail?np=${subjectDto.no}">보기</a> --%>
+<!-- 					</h2> -->
+<%-- 				</c:forEach> --%>
 			</c:otherwise>
 	</c:choose>
 </div>

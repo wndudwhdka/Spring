@@ -36,22 +36,77 @@
 			  	</tbody>
            </table>
       </div>
+
+
+
+<!-- 	<!-- 페이지 네이게이터 구현 -->
+<%-- 	<c:forEach var="i" begin="1" end="${totalPage}" step="1"> --%>
+<%-- 		<c:choose> --%>
+<%-- 			<c:when test="${page==i}"><!-- 현재 페이지 --> --%>
+<%-- 				${i} --%>
+<%-- 			</c:when> --%>
+<%-- 			<c:otherwise> --%>
+<%-- 				<a href="list?page=${i}">${i}</a> <!-- 현재 페이지가 아닌경우 --> --%>
+<%-- 			</c:otherwise> --%>
+<%-- 		</c:choose> --%>
+<%-- 	</c:forEach> --%>
+
+
+	<div class="row pagination center">
+ 
+		<!-- 처음 -->
+    	<c:choose>
+			<c:when test="${vo.first}">
+				<a class="disabled">&laquo;</a>
+			</c:when>
+			<c:otherwise>
+				<a href="list?page=1">&laquo;</a>
+			</c:otherwise>
+		</c:choose>
+		
+		<!-- 이전 -->
+		<c:choose>
+			<c:when test="${vo.prev}">
+				<a href="list?page=${vo.prevPage}">&lt;</a>
+			</c:when>
+			<c:otherwise>
+				<a class="disabled">&lt;</a>
+			</c:otherwise>
+		</c:choose>
+		
+		<!-- 숫자 -->
+        <c:forEach var="i" begin="${vo.startBlock}" end="${vo.finishBlock}">
+			<c:choose>
+				<c:when test="${vo.page == i}">
+					<a class="on">${i}</a>
+				</c:when>
+				<c:otherwise>
+					<a href="list?page=${i}">${i}</a>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>	
+	
+		<!-- 다음 -->
+		<c:choose>
+			<c:when test="${vo.next}">
+				<a href="list?page=${vo.nextPage}">&gt;</a>
+			</c:when>
+			<c:otherwise>
+				<a class="disabled">&gt;</a>
+			</c:otherwise>
+		</c:choose>
+		
+		<!-- 마지막 -->
+		<c:choose>
+			<c:when test="${vo.last}">
+				<a class="disabled">&raquo;</a>
+			</c:when>
+			<c:otherwise>
+				<a href="list?page=${vo.totalPage}">&raquo;</a>
+			</c:otherwise>
+		</c:choose>
+    </div>
 </div>
 	
-<br><br>
-
-<!-- 페이지 네이게이터 구현 -->
-<c:forEach var="i" begin="1" end="${totalPage}" step="1">
-	<c:choose>
-		<c:when test="${page==i}"><!-- 현재 페이지 -->
-			${i}
-		</c:when>
-		<c:otherwise>
-			<a href="list?page=${i}">${i}</a> <!-- 현재 페이지가 아닌경우 -->
-		</c:otherwise>
-	</c:choose>
-</c:forEach>
-
-
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
 

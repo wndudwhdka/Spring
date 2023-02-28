@@ -23,6 +23,8 @@ import com.kh.spring12.dto.MemberDto;
 import com.kh.spring12.dto.MemberStatDto;
 import com.kh.spring12.dto.PocketmonStatDto;
 import com.kh.spring12.dto.SubjectStatDto;
+import com.kh.spring12.vo.MemberPaginationVO;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -41,6 +43,7 @@ public class AdminController {
 	
 	@GetMapping("/member/list")
 	public String memberList(Model model,
+			@ModelAttribute ("vo") MemberPaginationVO vo,
 			@RequestParam(required=false,defaultValue="1")int page,
 			@RequestParam(required=false,defaultValue="10")int size
 			) {
@@ -53,6 +56,7 @@ public class AdminController {
 		
 		int totalCount = memberDao.selectCount();
 		model.addAttribute("totalCount", totalCount); 
+		vo.setCount(totalCount);
 		
 		int totalPage = (totalCount + size-1) /10; 
 		model.addAttribute("totalPage",totalPage);
