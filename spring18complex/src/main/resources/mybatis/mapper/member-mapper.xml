@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ↑ 이것은 XML 헤더라고 한다(반드시 첫 번째 줄에 위치) -->
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper에는 SQL 구문을 작성하고 namespace는 구분을 위한 별칭 -->    
+<mapper namespace="member">
+	
+	<!-- 
+		조건을 활용한 복합(올인원) 검색 구현
+		- 문자열 - 유사 검색을 기본 원칙으로 하되 등급은 일치하는 항목을 검색
+		- 숫자 - 유사 검색은 하지 않고 일치 검색 또는 구간 검색
+		- 날짜 - 지정한 당일 검색 혹은 구간 검색
+		
+		사용할 수 있는 태그
+		- <bind> - 구문 내에서 변수를 생성하는 역할
+		- <where> - 조건절을 자동 생성하는 역할
+		- <if> - 구문 내에서 논리에 의한 조건부 SQL을 작성하는 역할
+		- <choose> - 구문 내에서 여러 가지 중 한 가지를 선택하는 역할
+		- <foreach> - 제공되는 데이터 배열에 의해 반복 구문을 생성하는 역할
+	-->
+	
+	<select id="complexSearch" resultType="MemberDto">
+		<!-- 구문 내에서 사용할 변수 선언 -->
+		<bind name="memberIdExist" value="memberId != null and !memberId.equals('')"/>
+		<bind name="memberNickExist" value="memberNick != null and !memberNick.equals('')"/>
+		<bind name="memberEmailExist" value="memberEmail != null and !memberEmail.equals('')"/>
+		<bind name="memberLevelExist" value="memberLevelList != null and memberLevelList.size() > 0"/>
+		<bind name="memberTelExist" value="memberTel != null and !memberTel.equals('')"/>
+		<bind name="memberBirthExist" value="memberBirth != null and !memberBirth.equals('')"/>
+		<bind name="memberAddressExist" value="memberAddress != null and !memberAddress.equals('')"/>
+		<bind name="minPointExist" value="minPoint != null and !minPoint.equals('')"/>
+		<bind name="maxPointExist" value="maxPoint != null and !maxPoint.equals('')"/>
+		<bind name="beginJoindateExist" value="beginJoindate != null and !beginJoindate.equals('')"/>
+		<bind name="endJoindateExist" value="endJoindate != null and !endJoindate.equals('')"/>
+		<bind name="searchLoginDaysExist" value="searchLoginDays != null and !searchLoginDays.equals('')"/>
+		<bind name="orderListExist" value="orderList != null and orderList.size() > 0"/>
+	
+		select * from member
+		
+		<!-- 조건절 -->
+		<where>
+		
+		<!-- 아이디 : 유사 -->
+		<if test="memberIdExist">
+		and instr(member_id, #{memberId}) > 0
+		</if>
+		
+		<!-- 닉네임 : 유사 -->
+		<if test="memberNickExist">
+		and instr(member_nick, #{memberNick}) > 0
+		</if>
+		
+		<!-- 이메일 : 유사 -->
+		<!-- 
+			(주의) XML은 태그 형식을 사용하므로 부등호 사용 불가
+			(해결) 해석을 하지 않는 영역을 생성(CDATA 영역)
+		 -->
+		<if test="memberEmailExist">
+		<![CDATA[
+		and 0 < instr(member_email, #{memberEmail})
+		]]>
+		</if>
+		
+		<!-- 전화번호 : 일치 -->
+		<if test="memberTelExist">
+		and member_tel = #{memberTel}
+		</if>
+		
+		<!-- 생년월일 : 시작 -->
+		<if test="memberBirthExist">
+		and member_birth like #{memberBirth} || '%'
+<!-- 		and instr(member_birth, #{memberBirth}) = 1 -->
+		</if>
+		
+		<!-- 주소 : 기본주소+상세주소 (유사) -->
+		<if test="memberAddressExist">
+		and (
+			instr(member_basic_addr, #{memberAddress}) > 0 
+			or 
+			instr(member_detail_addr, #{memberAddress}) > 0
+		)
+		</if>
+		
+		<!-- 
+			등급
+			- 등급은 여러 개 있을 수 있으므로 in 구문으로 조회
+			- 데이터 개수만큼 in 구문을 완성하도록 foreach 사용 
+		-->
+		<if test="memberLevelExist">
+		and member_level in 
+		<foreach collection="memberLevelList"
+				open="(" close=")" item="memberLevel" separator=",">
+				#{memberLevel}
+		</foreach>
+		</if>
+		
+		<!-- 
+			포인트 : 구간
+			- 최소포인트(minPoint)와 최대포인트(maxPoint)를 이용하여 구간검색을 진행
+			- 총 3가지 경우(최소만, 최대만, 둘다)를 처리
+			- choose 구문 사용
+		-->
+		<choose>
+			<when test="minPointExist and maxPointExist">
+				and member_point between #{minPoint} and #{maxPoint}
+			</when>
+			<when test="minPointExist">
+				and member_point >= #{minPoint}
+			</when>
+			<when test="maxPointExist">
+				<![CDATA[
+				and member_point <= #{maxPoint}
+				]]>
+			</when>
+			<otherwise></otherwise>
+		</choose>
+		
+		<!-- 
+			가입일 : 기간 검색 
+			(주의) 날짜만 들어오므로 시간은 추가해줘야 한다
+		-->
+		<choose>
+			<when test="beginJoindateExist and endJoindateExist">
+				and member_join between 
+					to_date(#{beginJoindate} || ' ' || '00:00:00' , 'YYYY-MM-DD HH24:MI:SS')
+					and 
+					to_date(#{endJoindate} || ' ' || '23:59:59' , 'YYYY-MM-DD HH24:MI:SS')
+			</when>
+			<when test="beginJoindateExist">
+				and member_join >= to_date(#{beginJoindate} || ' ' || '00:00:00' , 'YYYY-MM-DD HH24:MI:SS')
+			</when>
+			<when test="endJoindateExist">
+				<![CDATA[
+				and member_join <= to_date(#{endJoindate} || ' ' || '23:59:59' , 'YYYY-MM-DD HH24:MI:SS')
+				]]>
+			</when>
+			<otherwise></otherwise>
+		</choose>
+		
+		
+		<!-- 로그인 : 최근 ?일 검색 -->
+		<if test="searchLoginDaysExist">
+		
+		<!-- 방법1 : 날짜만 뺄셈으로 변경(시간이 유지되서 만나이처럼 됨) -->
+		<!-- and member_login between sysdate-#{searchLoginDays} and sysdate -->
+		
+		<!-- 방법2 : 날짜를 뺄셈으로 구한 뒤 시간을 자정으로 변경 -->
+		and member_login between 
+			to_date(
+				to_char(sysdate-#{searchLoginDays} , 'YYYY-MM-DD'),
+				'YYYY-MM-DD'
+			) 
+			and 
+			sysdate
+		</if>
+		
+		</where>
+		
+		<!-- 
+			정렬
+			- 있을 수도, 없을 수도 있다
+			- 많을 수도 있다
+			- foreach로 처리
+			
+			order by 항목1 asc/desc , 항목2 asc/desc, ...
+		 -->
+		 <if test="orderListExist">
+		 order by 
+		 <foreach collection="orderList" item="order" separator=",">
+		 	${order}
+		 </foreach>
+		 </if>
+		
+	</select>
+	
+	<!-- 
+		회원별 게시글 목록 조회
+		- 회원을 먼저 조회한 뒤 게시글을 회원별로 조회(회원수+1번 조회)
+	 -->
+	 
+	 <!-- 
+	 	resultMap은 mybatis가 자동으로 처리할 수 없는 
+	 	조회 결과의 할당을 수동으로 설정하는 구문
+	 	- <result>는 조회 결과의 특정 컬럼을 특정 필드에 연결
+	 		- column은 데이터베이스 항목명
+	 		- property는 변수명
+	 		- javaType은 자바 자료형
+	 		- jdbcType은 데이터베이스 자료형
+	 	- <association>은 내부에 존재하는 클래스 객체를 의미
+	 	- <collection>은 내부에 존재하는 컬렉션 객체를 의미(ex : List)
+	 		- property는 컬렉션의 변수명
+	 		- javaType은 컬렉션의 자료형
+	 		- ofType은 저장데이터의 자료형(제네릭 타입)
+	 		- select는 컬렉션을 채우기 위한 서브 쿼리
+	 		- column은 select를 실행할 때 전달할 항목 
+	 	- <property>는 변수 이름을 의미
+	  -->
+	 <resultMap type="MemberWithBoardVO" id="mbvo">
+	 	<association property="memberDto" javaType="MemberDto">
+	 		<result column="member_id" property="memberId"/>
+	 		<result column="member_pw" property="memberPw"/>
+	 		<result column="member_nick" property="memberNick"/>
+	 		<result column="member_tel" property="memberTel"/>
+	 		<result column="member_email" property="memberEmail"/>
+	 		<result column="member_birth" property="memberBirth"/>
+	 		<result column="member_post" property="memberPost"/>
+	 		<result column="member_basic_addr" property="memberBasicAddr"/>
+	 		<result column="member_detail_addr" property="memberDetailAddr"/>
+	 		<result column="member_level" property="memberLevel"/>
+	 		<result column="member_point" property="memberPoint"/>
+	 		<result column="member_join" property="memberJoin"/>
+	 		<result column="member_login" property="memberLogin"/>
+	 	</association>
+	 	<collection property="boardList" select="boardByMember"
+	 		javaType="java.util.List" ofType="BoardDto" 
+	 		column="member_id"></collection>
+	 </resultMap>
+	 
+	 <select id="memberWithBoard" resultMap="mbvo">
+	 	select * from member
+	 	<where>
+	 		<if test="memberId != null and !memberId.equals('')">
+	 			and member_id = #{memberId}
+	 		</if>
+	 	</where>
+	 </select>
+	 
+	 <select id="boardByMember" resultType="BoardDto">
+	 	select * from board where board_writer = #{memberId}
+	 </select>
+	
+</mapper>
+
+
+
+
+
+

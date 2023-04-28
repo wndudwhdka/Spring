@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ↑ 이것은 XML 헤더라고 한다(반드시 첫 번째 줄에 위치) -->
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper에는 SQL 구문을 작성하고 namespace는 구분을 위한 별칭 -->    
+<mapper namespace="subject">
+	
+	<select id="list" resultType="SubjectDto">
+		select * from subject order by no asc
+	</select>
+	
+	<select id="find" resultType="SubjectDto">
+		select * from subject where no = #{no}
+	</select>
+	
+	<insert id="add">
+		insert into subject(no, name, period, price, type) 
+		values(#{no}, #{name}, #{period}, #{price}, #{type})
+	</insert>
+	
+	<update id="edit">
+		<bind name="noIsValid" value="no != null and !no.equals('')"/>
+		<bind name="nameIsValid" value="name != null and !name.equals('')"/>
+		<bind name="periodIsValid" value="period != null and !period.equals('') "/>
+		<bind name="priceIsValid" value="price != null and !price.equals('')"/>
+		<bind name="typeIsValid" value="type != null and !type.equals('')"/>
+	
+		update subject 
+		<set>
+			<if test="nameIsValid">name = #{name},</if>
+			<if test="periodIsValid">period = #{period},</if>
+			<if test="priceIsValid">price = #{price},</if>
+			<if test="typeIsValid">type = #{type},</if>
+		</set>
+		<where>
+			<if test="noIsValid">no = #{no}</if>
+		</where>
+	</update>
+	
+	<delete id="delete">
+		delete subject where no = #{no}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+

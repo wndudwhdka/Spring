@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+/* 
+    리셋은 완전히 태그를 개조하는 것을 의미 
+    최소한 margin 만큼은 제거하는 것을 목표로 설정
+*/
+/* http://meyerweb.com/eric/tools/css/reset/ 
+    v2.0 | 20110126
+    License: none (public domain)
+*/
+
+html {
+    font-size: 16px;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1.35;
+}
+
+/* 폭 설정 기준 및 글꼴 변경 */
+* {
+    box-sizing: border-box;
+}
+
+/* 웹 폰트 설정 */
+html {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* webkit 브라우저 설정 */
+h1 { font-size: 2em !important; }
+h2 { font-size: 1.5em !important; }
+h3 { font-size: 1.17em !important; }
+h4 { font-size: 1em !important; }
+h5 { font-size: 0.83em !important; }
+h6 { font-size: 0.67em !important; }
