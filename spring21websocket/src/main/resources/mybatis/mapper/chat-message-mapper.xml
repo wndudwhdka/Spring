@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="chatMessage">
+	
+	<insert id="add">
+		insert into char_message(
+			message_no, member_id, room_name, message_body, message_time
+		)
+		values(
+			chat_message_seq.nextval, 
+			#{memberId}, 
+			#{roomName},
+			#{messageBody},
+			sysdate 
+		)		
+	</insert>
+	
+	<select id="roomMessage" resultType="ChatMessageDto">
+		select * from chat_message
+		where room_name = #{roomName}
+		order by message_no asc 
+	</select>
+	
+</mapper>
