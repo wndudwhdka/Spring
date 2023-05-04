@@ -121,7 +121,14 @@ public class KakaoPayServiceImpl implements KakaoPayService{
 
 	@Override
 	public KakaoPayOrderResponseVO order(KakaoPayOrderResponseVO vo) throws URISyntaxException {
-		// TODO Auto-generated method stub
+		// 주소 생성
+		URI uri = new URI("");
+		
+		// 바디 생성
+		MultiValueMap<String,String> body = new LinkedMultiValueMap<>();
+		body.add("cid",properties.getCid());
+		body.add("tid",vo.get)
+		
 		return null;
 	}
 	

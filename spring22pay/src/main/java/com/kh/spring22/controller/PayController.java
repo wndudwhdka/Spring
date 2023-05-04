@@ -22,7 +22,11 @@ import com.kh.spring22.vo.KakaoPayApproveRequestVO;
 import com.kh.spring22.vo.KakaoPayApproveResponseVO;
 import com.kh.spring22.vo.KakaoPayReadyRequestVO;
 import com.kh.spring22.vo.KakaoPayReadyResponseVO;
+import com.kh.spring22.vo.PurchaseListVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/pay")
 public class PayController {
@@ -95,4 +99,12 @@ public class PayController {
 		// return "/WEB-INF/views/pay/list.jsp"; 
 		return "pay/list"; 
 	}
+	
+	@PostMapping("/test2")
+	public String test2(@ModelAttribute PurchaseListVO listVO) {
+		log.debug("데이터 개수 = {}", listVO.getData());
+		
+	}
+	
+	
 }
