@@ -6,7 +6,9 @@ import com.kh.spring22.dto.PaymentDto;
 
 public interface PaymentRepo {
 	int sequence();
-	void save(PaymentDto dto); 	
+	void save(PaymentDto dto);
 	List<PaymentDto> selectAll();
 	List<PaymentDto> selectByMember(String memberId);
+	PaymentDto find(int paymentNo);
+	void cancelRemain(int paymentNo);
 }

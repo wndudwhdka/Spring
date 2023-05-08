@@ -1,12 +1,13 @@
 package com.kh.spring22.vo;
 
 import java.sql.Date;
-import java.util.List;
 
 import lombok.Data;
 
+//카카오페이 결제 취소에 대한 응답 데이터
 @Data
-public class KakaoPayOrderResponseVO {
+public class KakaoPayCancelResponseVO {
+	private String aid;//요청 고유번호
 	private String tid;//거래번호
 	private String cid;//가맹점코드
 	private String status;//결제 상태
@@ -15,6 +16,7 @@ public class KakaoPayOrderResponseVO {
 	private String payment_method_type;//결제수단(CARD/MONEY)
 
 	private KakaoPayAmountVO amount;//결제금액정보
+	private KakaoPayAmountVO approved_cancel_amount;//지금 취소된금액정보
 	private KakaoPayAmountVO canceled_amount;//취소된금액정보
 	private KakaoPayAmountVO cancel_available_amount;//취소가능금액정보
 	
@@ -26,7 +28,5 @@ public class KakaoPayOrderResponseVO {
 	private Date approved_at;//결제 승인 시각
 	private Date canceled_at;//결제 취소 시각
 	
-	private KakaoPaySelectedCardInfoVO selected_card_info;
-//	private KakaoPayPaymentActionDetailVO[] payment_action_details;
-	private List<KakaoPayPaymentActionDetailVO> payment_action_details;
+	private String payload;//결제 메모
 }

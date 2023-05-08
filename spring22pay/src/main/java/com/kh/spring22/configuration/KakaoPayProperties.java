@@ -7,8 +7,8 @@ import lombok.Data;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "custom.kakopay")
+@ConfigurationProperties(prefix = "custom.kakaopay")
 public class KakaoPayProperties {
 	private String key;
-	private String cid; 
+	private String cid;
 }

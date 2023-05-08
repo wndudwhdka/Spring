@@ -1,7 +1,5 @@
 package com.kh.spring22.configuration;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class KakaoPayConfiguration {
-
+	
 	@Autowired
 	private KakaoPayProperties props;
 	
