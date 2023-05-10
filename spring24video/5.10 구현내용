@@ -1,0 +1,16 @@
+파일 업로드 시 -> D:/final/1 등으로 저장
+
+업로드된 파일 보기 -> /show?attachmentNo=1 페이지로 부르면 아까 1로 저장했던
+파일 show.jsp에서 가져옴 그리고 컨트롤러 측에서 판단하여 비디오일경우엔 재생 이미지면 재생할 수 있도록
+판별 한 뒤, model.addAttribute로 판별 구문을 jsp로 보냄
+
+<video>
+	<source src="/download?attachmentNo=${attachmentNO}" type="video/mp4">
+<video> 로 비디오 파일 불러오기
+
+@GetMapping("/download") 에서 RequestParam 으로 show.jsp에서 attahcment로 요청했던 파일을
+조회하여 해당 번호에 파일이 존재할 시에 이를 ResponseEntity.ok()의 형태로 반환하고 보여준다.
+
+
+ 
+

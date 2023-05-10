@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,12 +64,18 @@ public class AttachmentController {
 			String fileType = null; 
 			System.out.println("dir는 다음과 같습니다 "+dir);
 			
+			// 번호 생성 - DB에 저장하기 위함 번호대로 저장
+			int attachmentNo = attachmentRepo.sequence();
+			
 			// 비디오인지 판별
 			if(contentType.contains("video"))
 			{
 				// 비디오파일형식 판별 ex) mp4, wav
 				fileType = contentType.replaceAll("video/","");
 				System.out.println("비디오입니다. 파일확장자는 "+fileType+" 입니다.");
+				// 빈 파일 생성 파일명=시퀀스.파일형식 ex) 1.png, 2.jpeg, 3.mp4  
+				File target = new File(dir, String.valueOf(attachmentNo)+"."+fileType);
+				attach.transferTo(target);
 			}
 			// 사진인지 판별
 			else if(contentType.contains("image"))
@@ -76,18 +83,13 @@ public class AttachmentController {
 				// 사진파일형식 판별 ex) jpeg, png
 				fileType = contentType.replaceAll("image/","");
 				System.out.println("사진입니다. 파일확장자는 "+fileType+" 입니다.");
-			}
-			
-			// 파일 저장(저장 위치는 임시로 생성)---------------------------
-			
-			// 번호 생성 - DB에 저장하기 위함 번호대로 저장
-			int attachmentNo = attachmentRepo.sequence();
-			
-			// 빈 파일 생성 파일명=시퀀스.파일형식 ex) 1.png, 2.jpeg, 3.mp4  
-			File target = new File(dir, String.valueOf(attachmentNo)+"."+fileType);
+				File target = new File(dir, String.valueOf(attachmentNo));
+				attach.transferTo(target);
+			}			
+			// 파일 저장(저장 위치는 임시로 생성)---------------------------	
 			
 			// 생성한 빈 파일에 사진 혹은 동영상 데이터 저장
-			attach.transferTo(target);
+			
 			
 			// 동영상의 경우 이후 압축률이 높은 코덱으로 변경하여
 			// 용량을 줄여주고 채널 또한 모노로 바꾸어 동영상 파일을 압축한다.
@@ -110,10 +112,8 @@ public class AttachmentController {
 				// 원볼 파일의 위치를 받아와 Path 인스턴스 생성 
 				Path filePath = Paths.get(originFile);
 				
-				// 원본 파일을 통해 압축을 진행할 파일명
-				String videoFile = dir+"\\video"+String.valueOf(attachmentNo)+"."+fileType;
-				
-				
+				// 변환 파일 선언
+				String videoFile = dir+"\\"+String.valueOf(attachmentNo);
 				
 				// 비디오 파일 빌드 
 				FFmpegBuilder builder = new FFmpegBuilder().setInput(originFile)
@@ -135,29 +135,59 @@ public class AttachmentController {
 				executor.createJob(builder).run();
 				
 				// 원본 파일 삭제
-	
 				Files.deleteIfExists(filePath);
 				
-			
+				// 변환 파일 사이즈 조회
+				Path path = Paths.get(videoFile);
+				long videoSize = Files.size(path);
 				
+				// 비디오 DB 저장----------------------------
+				attachmentRepo.insert(AttachmentDto.builder()
+								.attachmentNo(attachmentNo)
+								.attachmentName(attach.getOriginalFilename())
+								.attachmentType(contentType)
+								.attachmentSize(videoSize)
+							.build());
 			}
 			
-			//DB 저장----------------------------
-			attachmentRepo.insert(AttachmentDto.builder()
-							.attachmentNo(attachmentNo)
-							.attachmentName(attach.getOriginalFilename())
-							.attachmentType(contentType)
-							.attachmentSize(attach.getSize())
-						.build());
+			else if(contentType.contains("image")) {
+				
+				// 이미지 DB 저장----------------------------
+				attachmentRepo.insert(AttachmentDto.builder()
+								.attachmentNo(attachmentNo)
+								.attachmentName(attach.getOriginalFilename())
+								.attachmentType(contentType)
+								.attachmentSize(attach.getSize())
+							.build());
+			}
+			
+			
 		}
 		return "redirect:/";
 	}
 
 	
-//	@PostMapping("/play")
-//	public String play() {
-//		
-//	}
+	@GetMapping("/show")
+	public String show(
+			@RequestParam int attachmentNo, 
+			Model model) {
+		
+		// 보여줄 파일의 contentType 조회
+		String contentType = attachmentRepo.selectOne(attachmentNo).getAttachmentType();
+		if(contentType.contains("video")) {
+			model.addAttribute("isVideo","Y");
+		}
+		
+		else if(contentType.contains("image")) {
+			model.addAttribute("isVideo","N");
+		}
+		
+		// Restful하게 비디오를 조회하기 위한 model.addAttribute
+		model.addAttribute("attachmentNo",attachmentNo);
+		// ContentType에 따라 비디오를 재생하기 위한 model.addAttribute
+		model.addAttribute("contentType",contentType); 
+		return "show";
+	}
 	
 
 	// 파일 업로드 & 다른 테이블 연계
@@ -197,11 +227,14 @@ public class AttachmentController {
 	@GetMapping("/download")
 	public ResponseEntity<ByteArrayResource> download(
 			@RequestParam int attachmentNo) throws IOException {
+		
 		//DB 조회
 		AttachmentDto attachmentDto = attachmentRepo.selectOne(attachmentNo);
 		if(attachmentDto == null) {//없으면 404
 			return ResponseEntity.notFound().build();
 		}	
+		
+		
 		
 		//파일 찾기
 		File target = new File(dir, String.valueOf(attachmentNo));
@@ -224,5 +257,10 @@ public class AttachmentController {
 							).build().toString()
 			)
 			.body(resource);
+	}
+	
+	@GetMapping("/test")
+	public String test() {
+		return "test";
 	}
 }
