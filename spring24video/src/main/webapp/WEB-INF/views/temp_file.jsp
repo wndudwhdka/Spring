@@ -18,7 +18,7 @@
                 <div class="col">
 					<!-- 이름을 -->
                     <form action="upload" method="post" enctype="multipart/form-data">
-                        <input type="file" name="attach" max-size="100000000">
+                        <input type="file" name="attach">
                         <br><br>
                         <button>업로드</button>
                     </form>
