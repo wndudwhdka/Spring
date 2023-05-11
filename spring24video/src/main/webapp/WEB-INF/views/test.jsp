@@ -130,6 +130,7 @@
 					
 					console.log(postDto)
 					
+					// 게시글을 비동기로 서버에 등록 
 					$.ajax({
 						  url: "http://localhost:8080/rest/post/",
 						  method: "post",
@@ -141,15 +142,20 @@
 						    console.log(error);
 						  }
 					}); 
-					
-					
+									
 					// 게시글 작성 이후 변수들 초기화 
 					categori ="";
 					$(".tag-input").val("");
-					tag={};
+					tag=[];
 					allTag="";
-					$(".all-tag").val(""); 
+					$(".all-tag").text(""); 
 					$(".post").val("");
+					
+					// ajax로 파일 서버에 등록  
+					$.ajax({
+						url: 
+					});
+					
 					
 					window.alert("글 게시가 완료되었습니다");					
 				});
@@ -230,7 +236,8 @@
                         	<div class="col-1"></div>
                         	<button class="col-2 tag-btn">입력</button>
                         </div>
-                        <div class="row all-tag">
+                        <div class="row">
+                        	<h6 class="all-tag"></h6>
                         </div>                         
                     </div>
                     
@@ -267,7 +274,7 @@
                     
                     <!-- footer -->
                     <div class="modal-footer">
-                    	<input type="file" multiple >
+                    	<input type="file" class="fileData" multiple >
                     	<button type="button" class="btn btn-primary write-finish"
                                 data-bs-dismiss="modal">작성완료</button>
                     
