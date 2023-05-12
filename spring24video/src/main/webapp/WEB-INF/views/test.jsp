@@ -88,6 +88,7 @@
 				let tag = [];			
 				// 태그 추가 버튼 클릭 시, 
 				$(".tag-btn").click(function(){
+					console.log("클릭함")
 					let tagInput = $(".tag-input").val();
 										
 					if(tagInput==""||tagInput==null) // 태그 입력창에 아무것도 안적혀 있다면
@@ -110,8 +111,9 @@
 					console.log("태그에 저장된 내용은 다음과 같습니다  : "+tag);
 				});
 				
-								
-				// 3. 글 작성 버튼 클릭 시, 
+				// 파일들을 저장할 객체 
+				var formData = new FormData();		
+				// 3. 글 작성 버튼 클릭 시, 업로드 과정-----------------------------------------------
 				$(".write-finish").click(function(){
 					
 					let postText = $(".post").val();
@@ -142,7 +144,44 @@
 						    console.log(error);
 						  }
 					}); 
-									
+					
+					// 태그 정보를 비동기로 서버에 등록  
+					$.ajax({
+						url: "http://localhost:8080/rest/post/tag",
+						method: "post",
+						data: JSON.stringify(tag),
+						contentType: "application/json; charset=utf-8",
+						success: function(result) {
+						    console.log(result);
+						},
+						  error: function(xhr, status, error) {
+						    console.log(error);
+						}
+					});
+					
+					// 파일 입력을 비동기로 서버에 전송 
+					var files = $("#fileInput").get(0).files;
+					for(var i =0; i < files.length;i++){
+						formData.append("attach",files[i]);						
+					}
+					
+					$.ajax({
+					      url: 'http://localhost:8080/rest/attachment/upload',
+					      type: 'POST',
+					      data: formData,
+					      contentType: false, // do not set content type
+					      processData: false, // do not process data
+					      success: function(data) {
+					        // handle success response
+					        console.log(data);
+					      },
+					      error: function(xhr, status, error) {
+					        // handle error response
+					        console.log(error);
+					      }
+					});
+					
+					
 					// 게시글 작성 이후 변수들 초기화 
 					categori ="";
 					$(".tag-input").val("");
@@ -151,15 +190,56 @@
 					$(".all-tag").text(""); 
 					$(".post").val("");
 					
-					// ajax로 파일 서버에 등록  
-					$.ajax({
-						url: 
-					});
+					// 전송할 파일 초기화 기존에 선언했던 formData를 다시 재 선언함으로써 초기화 진행  
+					formData = new FormData();
+					// 미리보기에 존재하는 데이터를 모두 초기화
+					$('#preview').val('');
 					
 					
 					window.alert("글 게시가 완료되었습니다");					
 				});
+				//-------------------------------------------------------------------------
 				
+				// 파일 업로드 사진은 5장 까지만, 동영상을 업로드 할 시에는 한개만..				
+				let imageCount = 0; // 이미지 파일 갯수
+				let videoCount = 0; // 동영상 파일 갯수
+				const preview = $('#preview'); // 미리보기 파일들 
+				$('#fileInput').on('change', function() {
+					  const files = this.files;
+
+					  const isImage = (file) => {
+					    return file['type'].includes('image');
+					  };
+
+					  const isVideo = (file) => {
+					    return file['type'].includes('video'); 
+					  }
+
+					  const MAX_FILES = 5; // 최대 파일 갯수
+					  
+					  console.log("파일길이는 : "+files.length)
+
+					  for (let i = 0; i < files.length; i++) {
+					    const file = files[i];
+					    if (imageCount >= MAX_FILES && isImage(file)) {
+					      alert('이미지 파일은 최대 5개까지만 업로드 가능합니다.');
+					      continue; // 다음 파일로 건너뛰기
+					    }
+					    if (videoCount > 0 && isVideo(file) && imageCount ==0) {
+					      alert('동영상 파일은 1개만 업로드 가능합니다.');
+					      break; // 반복문 종료
+					    }
+					    if (isImage(file)) {
+					      const img = $('<img>').attr('src', URL.createObjectURL(file)).attr('width', '100').attr('height', '100');
+					      preview.append(img);
+					      imageCount++;
+					    } else if (isVideo(file)) {
+					      const video = $('<video>').attr('src', URL.createObjectURL(file)).attr('width', '400').attr('height', '300').attr('controls', '');
+					      preview.append(video);
+					      videoCount++;
+					    }
+					  }
+					});
 			});
 		</script>
 		
@@ -270,11 +350,13 @@
                     <!-- body -->
                     <div class="modal-body">
                         <textarea class="col-12 post" style="height: 200px;" placeholder="글 작성란"></textarea>
+                        <div id="preview" contenteditable="true"></div>
+                        
                     </div>
                     
                     <!-- footer -->
                     <div class="modal-footer">
-                    	<input type="file" class="fileData" multiple >
+                    	<input type="file" id="fileInput" multiple>
                     	<button type="button" class="btn btn-primary write-finish"
                                 data-bs-dismiss="modal">작성완료</button>
                     

@@ -1,6 +1,5 @@
 package com.kh.spring24.rest;
 
-import java.sql.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -8,9 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.spring24.dto.FreeTagDto;
 import com.kh.spring24.dto.PostDto;
-import com.kh.spring24.dto.PostWithNickDto;
+import com.kh.spring24.repo.FreeTagRepo;
 import com.kh.spring24.repo.PostRepo;
 import com.kh.spring24.repo.PostWithNickRepo;
-import com.kh.spring24.vo.SearchVO;
 
 @CrossOrigin
 @RestController
@@ -35,6 +32,9 @@ public class PostRestController {
     @Autowired
     private PostWithNickRepo postWithNickRepo;
 
+    @Autowired
+    private FreeTagRepo freeTagRepo;
+    
     // 통합게시물 등록
     @PostMapping("/")
     public void insert(PostDto postDto, HttpSession session){
@@ -61,10 +61,26 @@ public class PostRestController {
         // # 해당 게시물 생성
         
     }
-    @PostMapping("/test")
-    public void test(PostDto postDto) {
-    	System.out.println(postDto);
-    }
+    
+    // -------------------- 태그정보 등록 
+    @PostMapping("/tag")
+    public void taging(@RequestBody List<String> freeTagList) {
+  
+    	Long tempNo; // controller측 임시 시퀀스 번호 
+    	FreeTagDto tempFreeTagDto = new FreeTagDto();
+    	
+    	for(String tag : freeTagList) {
+    		// 태그 존재 하지 않을 때,(태그 명으로 조회했을 때 시퀀스가 있는 경우)
+    		if(freeTagRepo.selectOne(tag)==null) 
+    		{
+    			tempNo = freeTagRepo.sequence();
+    			tempFreeTagDto.setFreeTagNo(tempNo);
+    			tempFreeTagDto.setFreeTagName(tag);
+    			freeTagRepo.insert(tempFreeTagDto);
+    		}
+    		
+    	}
+    }	
 
     // 통합게시물 목록조회, 해당 DTO로 전달
 //    @GetMapping("/")
